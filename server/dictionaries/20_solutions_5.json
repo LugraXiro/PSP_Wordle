@@ -1,0 +1,2002 @@
+[
+  {
+    "word": "haber",
+    "hint": "Existir; verbo auxiliar en tiempos compuestos."
+  },
+  {
+    "word": "poder",
+    "hint": "Tener capacidad o permiso."
+  },
+  {
+    "word": "tener",
+    "hint": "Poseer; mantener."
+  },
+  {
+    "word": "estar",
+    "hint": "Encontrarse en un estado o lugar."
+  },
+  {
+    "word": "decir",
+    "hint": "Expresar palabras."
+  },
+  {
+    "word": "mucho",
+    "hint": "En gran cantidad."
+  },
+  {
+    "word": "saber",
+    "hint": "Tener conocimiento."
+  },
+  {
+    "word": "creer",
+    "hint": "Pensar que algo es verdad."
+  },
+  {
+    "word": "vamos",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bueno",
+    "hint": "De buena calidad; positivo."
+  },
+  {
+    "word": "ahora",
+    "hint": "En este momento."
+  },
+  {
+    "word": "nuevo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "lugar",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "favor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "gente",
+    "hint": "Personas en general."
+  },
+  {
+    "word": "junto",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "razon",
+    "hint": "Motivo o causa."
+  },
+  {
+    "word": "orden",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "quiza",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "unico",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "igual",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "zorro",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "yendo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "hacer",
+    "hint": "Realizar; producir."
+  },
+  {
+    "word": "pasar",
+    "hint": "Ocurrir; atravesar."
+  },
+  {
+    "word": "tengo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "estoy",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "deber",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mirar",
+    "hint": "Observar."
+  },
+  {
+    "word": "señor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "chico",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "venir",
+    "hint": "Llegar desde otro lugar."
+  },
+  {
+    "word": "buena",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "amigo",
+    "hint": "Persona con la que hay amistad."
+  },
+  {
+    "word": "nunca",
+    "hint": "En ningún momento."
+  },
+  {
+    "word": "luego",
+    "hint": "Después; más tarde."
+  },
+  {
+    "word": "fuera",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "gusta",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "jugar",
+    "hint": "Participar en un juego."
+  },
+  {
+    "word": "robar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "odiar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "quedo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "union",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "indio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "zorra",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "yacer",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "hecho",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "padre",
+    "hint": "Hombre que tiene hijos."
+  },
+  {
+    "word": "tiene",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "estan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "dejar",
+    "hint": "Permitir; abandonar."
+  },
+  {
+    "word": "mejor",
+    "hint": "De más calidad; superior."
+  },
+  {
+    "word": "salir",
+    "hint": "Ir hacia fuera."
+  },
+  {
+    "word": "claro",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "vivir",
+    "hint": "Tener vida; residir."
+  },
+  {
+    "word": "beber",
+    "hint": "Tomar líquidos."
+  },
+  {
+    "word": "abrir",
+    "hint": "Dejar algo accesible; separar una puerta o tapa."
+  },
+  {
+    "word": "noche",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "largo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "forma",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ganar",
+    "hint": "Conseguir o vencer."
+  },
+  {
+    "word": "joven",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "resto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ojala",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "quise",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "ideal",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "habia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "puedo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tomar",
+    "hint": "Coger; también beber."
+  },
+  {
+    "word": "echar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "dicho",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mujer",
+    "hint": "Persona adulta de sexo femenino."
+  },
+  {
+    "word": "sacar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "comer",
+    "hint": "Ingerir alimentos."
+  },
+  {
+    "word": "valer",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bajar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "ayuda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nueva",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "libro",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "feliz",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "grupo",
+    "hint": "Conjunto de personas o cosas."
+  },
+  {
+    "word": "juego",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "radio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "oeste",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "quiso",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "idolo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hemos",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "puede",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tenia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "error",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "dolar",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "matar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "serio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "chica",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "visto",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "basta",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "adios",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "niños",
+    "hint": "Personas de poca edad."
+  },
+  {
+    "word": "listo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "final",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "gusto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "justo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "regla",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "oigan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "quede",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "habla",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "poner",
+    "hint": "Colocar."
+  },
+  {
+    "word": "tanto",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "exito",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "dicen",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mundo",
+    "hint": "El planeta; la sociedad."
+  },
+  {
+    "word": "seria",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "clase",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "viejo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "banco",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "andar",
+    "hint": "Caminar."
+  },
+  {
+    "word": "negro",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "lista",
+    "hint": "Concepto o nombre común."
+  },
+  {
+    "word": "facil",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "golpe",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "joder",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "ruido",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "obvio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "queso",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hacen",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "parte",
+    "hint": "Porción; sección."
+  },
+  {
+    "word": "traer",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "entra",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "dolor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "morir",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "sabia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "cinco",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "viene",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "brazo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "atras",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "novio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "libre",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "fuego",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "grave",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "jamas",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "reloj",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "oreja",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "queja",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "habra",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pedir",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tarde",
+    "hint": "Indica modo, tiempo o intensidad."
+  },
+  {
+    "word": "epoca",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "droga",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "madre",
+    "hint": "Mujer que tiene hijos."
+  },
+  {
+    "word": "somos",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "coche",
+    "hint": "Vehículo de motor."
+  },
+  {
+    "word": "venga",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "barco",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "armas",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nivel",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "linea",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "fondo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "grado",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "jurar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "rogar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "oiste",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "quita",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "hotel",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "punto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tocar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "esten",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "decia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mayor",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "sigue",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "calle",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "viaje",
+    "hint": "Actividad o conjunto."
+  },
+  {
+    "word": "broma",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "amiga",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "negar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "lleva",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "falso",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "guapo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "junta",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ritmo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "opera",
+    "hint": "Persona u oficio; a veces objeto."
+  },
+  {
+    "word": "quema",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "haria",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pagar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "trata",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "etapa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "dulce",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "medio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "subir",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "coger",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "vista",
+    "hint": "Concepto o nombre común."
+  },
+  {
+    "word": "besar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "avion",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nacer",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "lleno",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "fecha",
+    "hint": "Día concreto del calendario."
+  },
+  {
+    "word": "gasto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "julio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rueda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ocupa",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "quito",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "honor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "pense",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tirar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "entro",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "doler",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mover",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "sonar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "casar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "valor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "busca",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "arbol",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "norte",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "lindo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "fijar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "grito",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "junio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "reino",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "otoño",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "heroe",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "perro",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tenga",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "envio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "doble",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "manos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "sueño",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "cielo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "verte",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bolsa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "actor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nueve",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "llego",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "fumar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "gordo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "judio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "rezar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "oveja",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hogar",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "podia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "temer",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "extra",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "diria",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "meter",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "sitio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "culpa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "volar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "banda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "apoyo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "notar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "llave",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "firma",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "girar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "japon",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "rumor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "optar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "huevo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "parar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tonto",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "enero",
+    "hint": "Persona u oficio; a veces objeto."
+  },
+  {
+    "word": "dando",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "miedo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "saben",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "carta",
+    "hint": "Mensaje escrito; también naipe."
+  },
+  {
+    "word": "verlo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bomba",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "autor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nariz",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "local",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "fuese",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "genio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "jaula",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ricos",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "oirlo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "hazlo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "papel",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "trato",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "exige",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "dueño",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "meses",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "soler",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "campo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "viste",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "baile",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ambas",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "norma",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "llega",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "frase",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "gesto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "justa",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "ronda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "opina",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "haras",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pesar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "traje",
+    "hint": "Actividad o conjunto."
+  },
+  {
+    "word": "enano",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "dudar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "murio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "siglo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "cargo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "vieja",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "bello",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "abril",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "negra",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "lucha",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "firme",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "gallo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "jabon",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rodar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "henry",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "pobre",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "total",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "envie",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "disco",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "media",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "salud",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "crear",
+    "hint": "Acción habitual."
+  },
+  {
+    "word": "verde",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "brujo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "angel",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nieve",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "llevo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "filme",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "guste",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "jamon",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ruego",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "hagan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pegar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "tipos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "elige",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "darme",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mitad",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "suena",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "capaz",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "venta",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "breve",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "ayude",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "nieto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "lider",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "fines",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "grano",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rumbo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hueso",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "prisa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tarea",
+    "hint": "Trabajo o actividad a realizar."
+  },
+  {
+    "word": "ebrio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "duele",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "mente",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "suelo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "color",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "vuelo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "boton",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "aereo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "nadar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "larga",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "fruta",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "guiar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "rival",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "humor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "pared",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "toque",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "durar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "menor",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "siete",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "causa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "verme",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bordo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "arena",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "nacio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "linda",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "falsa",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "guion",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rehen",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hielo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "pista",
+    "hint": "Concepto o nombre común."
+  },
+  {
+    "word": "texto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "debil",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "metro",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "señal",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "comun",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "verla",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bolso",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "animo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "noble",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "leche",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "fruto",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "grasa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rubio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "hayan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pidio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "turno",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "deuda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "marca",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "salvo",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "casos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "vayan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bravo",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "actos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "niega",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "llena",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "frito",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "gatos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "raton",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hable",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "podra",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "trago",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "diste",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "miren",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "salio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "corto",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "votar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "basar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "aviso",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "legal",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "flota",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "globo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "reves",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "haran",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "pieza",
+    "hint": "Concepto o nombre común."
+  },
+  {
+    "word": "truco",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "digno",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "mudar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "serie",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "carne",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "vacio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "borde",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "arder",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "lavar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "fallo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "gorda",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "rojas",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "harto",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "plaza",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "techo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "daria",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "moral",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "seran",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "corte",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "vengo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "barra",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "abrio",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "lunes",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "fatal",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "gozar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "rango",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "huele",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "perra",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "trajo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "dicha",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "mando",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "santo",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "cenar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "venia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "busco",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "arroz",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "letra",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "falda",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "grant",
+    "hint": "Palabra habitual."
+  },
+  {
+    "word": "rasgo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "hecha",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "pecho",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tumba",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "darse",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "motor",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "soñar",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "civil",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "viven",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "bruja",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "anual",
+    "hint": "Relacionado con algo; describe una cualidad."
+  },
+  {
+    "word": "lento",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "fibra",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "gramo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "renta",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "herir",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "plato",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tales",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "duque",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "muere",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "solia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "creia",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "virus",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "balas",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ayudo",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "labio",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "freno",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "green",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "rollo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "horno",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "playa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "tropa",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "dosis",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "malas",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "sucio",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "creen",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "vivos",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "batir",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "artes",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "locos",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "flujo",
+    "hint": "Objeto, lugar o concepto habitual."
+  },
+  {
+    "word": "ganan",
+    "hint": "Acción o proceso."
+  },
+  {
+    "word": "rubia",
+    "hint": "Describe una cualidad."
+  },
+  {
+    "word": "hazme",
+    "hint": "Acción o proceso."
+  }
+]

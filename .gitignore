@@ -1,0 +1,22 @@
+# Build & Gradle
+.gradle/
+build/
+server/bin/
+*.class
+
+# IDE
+.idea/
+*.iml
+
+# Kotlin
+.kotlin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+wordle-logs.txt
+
+# Planning (internal)
+docs/PLANNING_COMMITS.md
