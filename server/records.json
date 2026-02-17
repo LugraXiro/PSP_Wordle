@@ -1,0 +1,32 @@
+{
+    "pveRecordsByLength": {
+        "5": [
+            {
+                "playerName": "admin",
+                "score": 3965
+            },
+            {
+                "playerName": "admin",
+                "score": 0
+            },
+            {
+                "playerName": "admin",
+                "score": 0
+            }
+        ],
+        "4": [],
+        "6": [],
+        "7": []
+    },
+    "pvpRecordsByLength": {
+        "4": [],
+        "5": [
+            {
+                "playerName": "admin",
+                "score": 0
+            }
+        ],
+        "6": [],
+        "7": []
+    }
+}
