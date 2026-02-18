@@ -1,0 +1,101 @@
+# Guia de lanzamiento - Wordle Multiplatform
+
+## Servidor
+
+### Comprobar si el puerto esta en uso
+
+El servidor usa el puerto configurado en `server/server.properties` (por defecto `5678`).
+
+**Windows (PowerShell o CMD):**
+```bash
+netstat -ano | findstr ":5678"
+```
+
+**Linux/Mac:**
+```bash
+lsof -i :5678
+```
+
+Si aparece una linea con `LISTENING`, el puerto esta ocupado. El numero al final de la linea es el PID del proceso.
+
+### Identificar y matar el proceso que ocupa el puerto
+
+**Windows:**
+```bash
+# Ver que proceso usa el puerto (el PID aparece en la ultima columna)
+netstat -ano | findstr ":5678"
+
+# Matar el proceso por PID (sustituir 12345 por el PID real)
+taskkill /PID 12345 /F
+```
+
+**Linux/Mac:**
+```bash
+# Ver que proceso usa el puerto
+lsof -i :5678
+
+# Matar el proceso por PID
+kill -9 12345
+```
+
+### Levantar el servidor
+
+Desde la raiz del proyecto:
+
+```bash
+./gradlew :server:run
+```
+
+Esto compila y arranca el servidor. Se abrira automaticamente la ventana de logs en tiempo real. El servidor queda escuchando en `localhost:5678`.
+
+Para verificar que arranca correctamente, la ventana de logs debe mostrar las lineas de inicio con `[SERVER]` en verde.
+
+---
+
+## Cliente
+
+### Lanzar un cliente
+
+Desde la raiz del proyecto:
+
+```bash
+./gradlew :composeApp:run
+```
+
+Cada cliente que se lance tendra un ID unico de 4 caracteres (ej: `CLIENT-a1b2`) que aparecera en la ventana de logs del servidor para diferenciarlo de otros clientes.
+
+### Lanzar multiples clientes
+
+Simplemente abre varias terminales y ejecuta el mismo comando en cada una:
+
+```bash
+# Terminal 1
+./gradlew :composeApp:run
+
+# Terminal 2
+./gradlew :composeApp:run
+
+# Terminal 3
+./gradlew :composeApp:run
+```
+
+Cada instancia se conectara al servidor con su propio ID y aparecera con un color distinto en los logs.
+
+---
+
+## Orden de lanzamiento
+
+1. Primero levantar el servidor (`./gradlew :server:run`)
+2. Esperar a que la ventana de logs muestre "SERVIDOR OPERATIVO"
+3. Lanzar los clientes que se necesiten (`./gradlew :composeApp:run`)
+
+---
+
+## Resumen rapido
+
+| Accion | Comando |
+|---|---|
+| Comprobar puerto (Windows) | `netstat -ano \| findstr ":5678"` |
+| Matar proceso (Windows) | `taskkill /PID <PID> /F` |
+| Levantar servidor | `./gradlew :server:run` |
+| Levantar cliente | `./gradlew :composeApp:run` |
