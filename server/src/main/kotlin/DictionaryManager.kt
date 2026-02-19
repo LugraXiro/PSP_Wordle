@@ -93,7 +93,23 @@ class DictionaryManager(private val dictionaryDir: String = "dictionaries") {
                     }
                 }
 
-                // Cargar palabras válidas adicionales si existen
+                // Cargar palabras válidas desde 10_valid_N.txt (diccionario completo para validación)
+                val txtFile = File(dir, "10_valid_$length.txt")
+                if (txtFile.exists()) {
+                    try {
+                        val words = txtFile.readLines()
+                            .map { normalizeWord(it.trim()) }
+                            .filter { it.length == length }
+                            .toSet()
+                        val existingValid = validWords[length] ?: emptySet()
+                        validWords[length] = existingValid + words
+                        FileLogger.info("SERVER", "✅ Palabras válidas $length letras: ${words.size} palabras (10_valid_$length.txt)")
+                    } catch (e: Exception) {
+                        FileLogger.warning("SERVER", "⚠️  Error cargando 10_valid_$length.txt: ${e.message}")
+                    }
+                }
+
+                // Cargar palabras válidas adicionales si existen (formato legacy JSON)
                 val validFile = File(dir, "palabras_validas_$length.json")
                 if (validFile.exists()) {
                     try {

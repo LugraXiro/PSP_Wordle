@@ -12,7 +12,15 @@ class GameServer(
     private val gameOrchestrator = GameOrchestrator(dictionaryManager, recordsManager)
     private val roomManager = RoomManager()
     private val activeClients = AtomicInteger(0)
-    
+    @Volatile private var serverSocket: ServerSocket? = null
+    @Volatile private var running = false
+
+    fun stop() {
+        running = false
+        serverSocket?.close()
+        FileLogger.info("SERVER", "🛑 Apagado solicitado — cerrando servidor...")
+    }
+
     suspend fun start() = coroutineScope {
         val serverSocket: ServerSocket
 
@@ -22,6 +30,7 @@ class GameServer(
                 50,
                 InetAddress.getByName(config.host)
             )
+            this@GameServer.serverSocket = serverSocket
         } catch (e: java.net.BindException) {
             FileLogger.error("SERVER", "╔═════════════════════════════════════════════════════════╗")
             FileLogger.error("SERVER", "║  ❌ ERROR: PUERTO ${config.port} YA ESTÁ EN USO ❌      ║")
@@ -59,21 +68,25 @@ class GameServer(
         FileLogger.info("SERVER", "║     El servidor está listo para recibir clientes  ║")
         FileLogger.info("SERVER", "╚═══════════════════════════════════════════════════╝")
         FileLogger.info("SERVER", "⏳ Esperando conexiones...")
-        
+        running = true
+
         try {
-            while (isActive) {
-                val clientSocket = withContext(Dispatchers.IO) {
-                    serverSocket.accept()
+            while (isActive && running) {
+                val clientSocket = try {
+                    withContext(Dispatchers.IO) { serverSocket.accept() }
+                } catch (e: java.net.SocketException) {
+                    // Socket cerrado por stop() — apagado limpio
+                    break
                 }
-                
+
                 if (activeClients.get() >= config.maxClients) {
                     FileLogger.warning("SERVER", "⚠️  Servidor lleno (${activeClients.get()}/${config.maxClients}), rechazando conexión desde ${clientSocket.inetAddress.hostAddress}")
                     clientSocket.close()
                     continue
                 }
-                
+
                 activeClients.incrementAndGet()
-                
+
                 launch {
                     try {
                         val handler = ClientHandler(

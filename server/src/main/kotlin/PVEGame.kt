@@ -22,6 +22,7 @@ class PVEGame(
     private var currentAttempts = 0
     private var roundActive = false
     private var gameAbandoned = false
+    private var roundHintUsed = false
 
     suspend fun start() {
         FileLogger.info("SERVER", "🎮 Iniciando partida PVE: $gameId para jugador: $playerName")
@@ -80,6 +81,7 @@ class PVEGame(
         roundStartTime = System.currentTimeMillis()
         currentAttempts = 0
         roundActive = true
+        roundHintUsed = false
         FileLogger.debug("SERVER", "🔵 Ronda $currentRound marcada como activa, esperando jugadas del jugador...")
         
         // Timeout de 90 segundos
@@ -124,12 +126,11 @@ class PVEGame(
             return
         }
 
-        // Validación de diccionario deshabilitada para testing
-        // if (!dictionaryManager.isValidWord(word)) {
-        //     FileLogger.warning("SERVER", "⚠️  Intento rechazado: Palabra '$word' no está en el diccionario")
-        //     sendError("INVALID_WORD", "La palabra '$word' no está en el diccionario")
-        //     return
-        // }
+        if (!dictionaryManager.isValidWord(word, config.wordLength)) {
+            FileLogger.warning("SERVER", "⚠️  Intento rechazado: '$word' no está en el diccionario")
+            sendError("INVALID_WORD", "\"$word\" no es una palabra válida")
+            return
+        }
 
         currentAttempts++
         val timeElapsed = ((System.currentTimeMillis() - roundStartTime) / 1000).toInt()
@@ -192,11 +193,12 @@ class PVEGame(
     private suspend fun endRound(won: Boolean, timeSeconds: Int) {
         roundActive = false
 
-        val roundScore = if (won) {
+        val baseScore = if (won) {
             ((7 - currentAttempts) * 1000 - timeSeconds).coerceAtLeast(0)
         } else {
             0
         }
+        val roundScore = if (roundHintUsed) (baseScore - 1000).coerceAtLeast(0) else baseScore
 
         totalScore += roundScore
         if (won) roundsWon++
@@ -242,6 +244,22 @@ class PVEGame(
         clientHandler.send("GAME_END", json.encodeToString(gameEnd))
     }
     
+    suspend fun handleRequestHint() {
+        if (!roundActive) {
+            sendError("ROUND_NOT_ACTIVE", "No hay ronda activa")
+            return
+        }
+        if (roundHintUsed) {
+            sendError("HINT_ALREADY_USED", "Ya usaste la pista en esta ronda")
+            return
+        }
+        val hint = currentWord?.pista ?: "Sin pista disponible"
+        roundHintUsed = true
+        FileLogger.info("SERVER", "💡 Pista solicitada en ronda $currentRound: \"$hint\" (penalización -1000 pts)")
+        val response = HintResponse(hint = hint)
+        clientHandler.send("HINT_RESPONSE", json.encodeToString(response))
+    }
+
     private suspend fun sendError(code: String, message: String) {
         FileLogger.error("SERVER", "❌ Enviando error al cliente: [$code] $message")
         val error = ErrorMessage(code, message)

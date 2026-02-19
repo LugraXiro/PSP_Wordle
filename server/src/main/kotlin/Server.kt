@@ -2,6 +2,11 @@ import kotlinx.coroutines.runBlocking
 import logging.FileLogger
 
 fun main() = runBlocking {
+    // Limpiar logs anteriores e iniciar ventana de logs
+    FileLogger.clear()
+    val logsWindow = LogsWindow()
+    logsWindow.show()
+
     FileLogger.info("SERVER", "🚀 Iniciando servidor Wordle Multiplatform...")
 
     try {
@@ -12,7 +17,7 @@ fun main() = runBlocking {
 
         // Cargar diccionario
         FileLogger.debug("SERVER", "📚 Cargando diccionario...")
-        val dictionaryManager = DictionaryManager("palabras.json")
+        val dictionaryManager = DictionaryManager("dictionaries")
 
         // Cargar/crear records
         FileLogger.debug("SERVER", "🏆 Cargando records...")
@@ -21,6 +26,7 @@ fun main() = runBlocking {
         // Iniciar servidor
         FileLogger.debug("SERVER", "🌐 Iniciando servidor de red...")
         val server = GameServer(config, dictionaryManager, recordsManager)
+        logsWindow.setShutdownCallback { server.stop() }
         server.start()
 
     } catch (e: Exception) {
@@ -29,5 +35,6 @@ fun main() = runBlocking {
         e.printStackTrace()
     } finally {
         FileLogger.info("SERVER", "👋 Cerrando servidor Wordle Multiplatform...")
+        logsWindow.close()
     }
 }

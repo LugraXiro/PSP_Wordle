@@ -93,6 +93,13 @@ class ClientHandler(
                 "READY_NEXT_ROUND" -> {
                     currentPVPGame?.playerReady(this)
                 }
+                "REQUEST_HINT" -> {
+                    if (currentPVPGame != null) {
+                        currentPVPGame?.handleRequestHint(this)
+                    } else {
+                        currentGame?.handleRequestHint()
+                    }
+                }
                 else -> {
                     FileLogger.warning("SERVER", "⚠️  [$clientId] Tipo de mensaje desconocido: ${msg.type}, payload: ${msg.payload}")
                 }

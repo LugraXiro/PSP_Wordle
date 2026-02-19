@@ -29,6 +29,26 @@ class GetRecordsRequest
 @Serializable
 class AbandonGameRequest  // Cliente solicita abandonar la partida
 
+@Serializable
+class CreateRoomRequest  // Crear sala PVP
+
+@Serializable
+data class JoinRoomRequest(
+    val roomId: String
+)
+
+@Serializable
+class ListRoomsRequest  // Pedir lista de salas disponibles
+
+@Serializable
+class LeaveRoomRequest  // Salir de la sala actual
+
+@Serializable
+class StartPVPGameRequest  // El host inicia la partida PVP
+
+@Serializable
+class ReadyNextRoundRequest  // Jugador listo para siguiente ronda PVP
+
 // ==================== MENSAJES SERVIDOR → CLIENTE ====================
 
 @Serializable
@@ -88,6 +108,89 @@ data class OpponentUpdate(  // Solo PVP
     val opponentRoundScore: Int? = null
 )
 
+// ==================== MENSAJES PVP: SALAS ====================
+
+@Serializable
+data class RoomInfo(
+    val roomId: String,
+    val hostName: String,
+    val playerCount: Int,
+    val maxPlayers: Int
+)
+
+@Serializable
+data class RoomCreated(
+    val roomId: String
+)
+
+@Serializable
+data class RoomJoined(
+    val roomId: String,
+    val players: List<String>
+)
+
+@Serializable
+data class RoomUpdate(
+    val roomId: String,
+    val players: List<String>,
+    val hostName: String
+)
+
+@Serializable
+data class RoomListResponse(
+    val rooms: List<RoomInfo>
+)
+
+@Serializable
+data class PlayerLeft(
+    val playerName: String
+)
+
+@Serializable
+data class PlayerScore(
+    val playerName: String,
+    val score: Int,
+    val roundsWon: Int
+)
+
+@Serializable
+data class PlayerRoundStatus(
+    val playerName: String,
+    val attempts: Int,
+    val finished: Boolean,
+    val totalScore: Int
+)
+
+@Serializable
+data class PlayersStatusUpdate(
+    val players: List<PlayerRoundStatus>
+)
+
+@Serializable
+data class PVPRoundEnd(
+    val roundNumber: Int,
+    val won: Boolean,
+    val correctWord: String,
+    val attemptsUsed: Int,
+    val timeSeconds: Int,
+    val roundScore: Int,
+    val totalScore: Int,
+    val rankings: List<PlayerScore>
+)
+
+@Serializable
+data class PVPGameEnd(
+    val finalScore: Int,
+    val rankings: List<PlayerScore>,
+    val isNewRecord: Boolean
+)
+
+@Serializable
+data class WaitingForPlayers(
+    val readyCount: Int,
+    val totalCount: Int
+)
+
 @Serializable
 data class RecordEntry(
     val playerName: String,
@@ -105,6 +208,11 @@ data class RecordsResponse(
 data class ErrorMessage(
     val code: String,
     val message: String
+)
+
+@Serializable
+data class HintResponse(
+    val hint: String
 )
 
 // ==================== WRAPPER PARA DESERIALIZACIÓN ====================

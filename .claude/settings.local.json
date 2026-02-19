@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch:*)",
+      "Bash(while read ref)",
+      "Bash(do git update-ref -d \"$ref\")",
+      "Bash(done)",
+      "Bash(git stash pop:*)",
+      "Bash(git stash drop:*)",
+      "Bash(git reset:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(powershell.exe -Command \"Get-Process | Where-Object {\\($_.ProcessName -like ''*java*'' -or $_.ProcessName -like ''*kotlin*''\\) -and $_.MainWindowTitle -ne ''''} | Select-Object ProcessName, MainWindowTitle, Id\")",
+      "Bash(jobs:*)",
+      "Bash(./gradlew :composeApp:createDistributable:*)",
+      "Bash(./gradlew :server:run:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}

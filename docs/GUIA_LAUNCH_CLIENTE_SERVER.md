@@ -91,6 +91,62 @@ Cada instancia se conectara al servidor con su propio ID y aparecera con un colo
 
 ---
 
+## Parar los servicios
+
+### Parar el cliente
+
+El cliente tiene ventana grafica: simplemente **cierra la ventana** o pulsa `Ctrl+C` en la terminal donde se lanzo.
+
+### Parar el servidor
+
+El servidor es mas complejo porque aunque abre una ventana de logs, **cerrar esa ventana NO detiene el proceso**: el servidor sigue ejecutandose en background y el puerto sigue ocupado.
+
+Hay tres formas de pararlo:
+
+#### Opcion 1 (recomendada): Ctrl+C en la terminal
+
+Pulsa `Ctrl+C` en la terminal donde ejecutaste `./gradlew :server:run`. Esto envia una senal de interrupcion al proceso de Gradle y detiene el servidor limpiamente.
+
+#### Opcion 2: Matar por PID (si la terminal esta cerrada)
+
+Si ya no tienes la terminal, identifica el proceso que ocupa el puerto y matalo:
+
+**Windows (PowerShell o CMD):**
+```bash
+# 1. Ver el PID del proceso que ocupa el puerto
+netstat -ano | findstr ":5678"
+
+# 2. Matar ese proceso (sustituir 12345 por el PID real)
+taskkill /PID 12345 /F
+```
+
+**Linux/Mac:**
+```bash
+# 1. Ver el PID
+lsof -i :5678
+
+# 2. Matar el proceso
+kill -9 12345
+```
+
+#### Opcion 3: Matar todos los procesos Java (nuclear)
+
+Si no encuentras el PID o hay varios procesos Gradle colgados:
+
+**Windows:**
+```bash
+taskkill /IM java.exe /F
+```
+
+**Linux/Mac:**
+```bash
+pkill -f java
+```
+
+> **Atencion:** esta opcion mata *todos* los procesos Java en ejecucion, no solo el servidor. Usa solo si las otras opciones fallan.
+
+---
+
 ## Resumen rapido
 
 | Accion | Comando |
@@ -99,3 +155,5 @@ Cada instancia se conectara al servidor con su propio ID y aparecera con un colo
 | Matar proceso (Windows) | `taskkill /PID <PID> /F` |
 | Levantar servidor | `./gradlew :server:run` |
 | Levantar cliente | `./gradlew :composeApp:run` |
+| **Parar servidor** | `Ctrl+C` en la terminal |
+| **Parar servidor (forzado)** | `taskkill /PID <PID> /F` |
