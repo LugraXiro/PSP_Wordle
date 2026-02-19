@@ -9,7 +9,8 @@ data class StartGameRequest(
     val mode: GameMode,
     val rounds: Int = 5,
     val wordLength: Int = 5,
-    val maxAttempts: Int = 6
+    val maxAttempts: Int = 6,
+    val saveRecords: Boolean = true
 )
 
 @Serializable

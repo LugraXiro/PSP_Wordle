@@ -72,7 +72,7 @@ fun PVPRoomScreen(
                     }
                 }
 
-                Divider(modifier = Modifier.padding(vertical = 4.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 Text(
                     text = "Jugadores (${uiState.roomPlayers.size}/4)",

@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import viewmodel.GameViewModel
+import kotlin.system.exitProcess
 
 @Composable
 fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () -> Unit, onViewRecords: () -> Unit, modifier: Modifier = Modifier) {
@@ -19,6 +20,7 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
     var port by remember { mutableStateOf("5678") }
     var playerName by remember { mutableStateOf("") }
     var isConnecting by remember { mutableStateOf(false) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     val canConnect = !isConnecting && playerName.isNotBlank()
     val doConnect: () -> Unit = {
@@ -78,7 +80,52 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
                 }
                 
                 uiState.error?.let { error -> Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) { Text(text = error, modifier = Modifier.padding(12.dp), color = MaterialTheme.colorScheme.onErrorContainer) } }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { showExitDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Salir de la aplicación")
+                }
             }
         }
+    }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = {
+                Text(
+                    text = "¿Salir de la aplicación?",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = "¿Estás seguro de que quieres cerrar la aplicación?",
+                    fontSize = 16.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { exitProcess(0) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Salir")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { showExitDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }

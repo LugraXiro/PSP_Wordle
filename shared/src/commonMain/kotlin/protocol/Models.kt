@@ -19,7 +19,8 @@ data class GameConfig(
     val wordLength: Int = 5,
     val maxAttempts: Int = 6,
     val rounds: Int = 5,
-    val timeoutSeconds: Int = 90
+    val timeoutSeconds: Int = 90,
+    val saveRecords: Boolean = true
 )
 
 @Serializable

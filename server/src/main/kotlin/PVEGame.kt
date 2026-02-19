@@ -230,7 +230,12 @@ class PVEGame(
     }
 
     private suspend fun endGame() {
-        val isNewRecord = recordsManager.updateScore(GameMode.PVE, playerName, totalScore, config.wordLength)
+        val isNewRecord = if (config.saveRecords) {
+            recordsManager.updateScore(GameMode.PVE, playerName, totalScore, config.wordLength)
+        } else {
+            FileLogger.info("SERVER", "📊 Partida personalizada: puntuación no guardada en récords")
+            false
+        }
 
         FileLogger.info("SERVER", "🏆 Partida PVE finalizada: ID=$gameId | Jugador=$playerName | Score final=$totalScore | Rondas ganadas=$roundsWon/${config.rounds} | ${config.wordLength} letras | ${if (isNewRecord) "¡NUEVO RÉCORD! 🎉" else "Sin récord"}")
 

@@ -56,7 +56,7 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
 
                 // Contenido scrollable con los records
                 Column(
@@ -103,7 +103,7 @@ private fun RecordTable(title: String, records: List<RecordEntry>, modifier: Mod
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             if (records.isEmpty()) {
                 Text(

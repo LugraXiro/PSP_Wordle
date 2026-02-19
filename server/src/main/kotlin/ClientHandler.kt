@@ -119,7 +119,8 @@ class ClientHandler(
                     wordLength = request.wordLength,
                     maxAttempts = request.maxAttempts,
                     rounds = request.rounds,
-                    timeoutSeconds = 90
+                    timeoutSeconds = 90,
+                    saveRecords = request.saveRecords
                 )
                 currentGame = gameOrchestrator.createPVEGame(this, config, playerName)
                 CoroutineScope(Dispatchers.IO).launch {

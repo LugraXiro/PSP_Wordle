@@ -5,7 +5,7 @@ import protocol.GameMode
 import ui.screens.*
 import viewmodel.GameViewModel
 
-enum class Screen { MENU, SELECT_WORD_LENGTH, GAME, RECORDS, PVP_LOBBY, PVP_ROOM }
+enum class Screen { MENU, PVE_MODE_SELECT, PVE_CUSTOM_CONFIG, SELECT_WORD_LENGTH, GAME, RECORDS, PVP_LOBBY, PVP_ROOM }
 
 @Composable
 fun App() {
@@ -18,14 +18,42 @@ fun App() {
         when (currentScreen) {
             Screen.MENU -> MenuScreen(
                 viewModel = viewModel,
-                onStartPVE = {
-                    selectedMode = GameMode.PVE
-                    currentScreen = Screen.SELECT_WORD_LENGTH
-                },
-                onStartPVP = {
-                    currentScreen = Screen.PVP_LOBBY
-                },
+                onStartPVE = { currentScreen = Screen.PVE_MODE_SELECT },
+                onStartPVP = { currentScreen = Screen.PVP_LOBBY },
                 onViewRecords = { currentScreen = Screen.RECORDS }
+            )
+
+            Screen.PVE_MODE_SELECT -> PVEModeSelectionScreen(
+                onClassic = {
+                    coroutineScope.launch {
+                        viewModel.startGame(
+                            mode = GameMode.PVE,
+                            rounds = 5,
+                            wordLength = 5,
+                            maxAttempts = 6,
+                            saveRecords = true
+                        )
+                        currentScreen = Screen.GAME
+                    }
+                },
+                onCustom = { currentScreen = Screen.PVE_CUSTOM_CONFIG },
+                onBack = { currentScreen = Screen.MENU }
+            )
+
+            Screen.PVE_CUSTOM_CONFIG -> PVECustomConfigScreen(
+                onStart = { config ->
+                    coroutineScope.launch {
+                        viewModel.startGame(
+                            mode = GameMode.PVE,
+                            rounds = config.rounds,
+                            wordLength = config.wordLength,
+                            maxAttempts = config.maxAttempts,
+                            saveRecords = false
+                        )
+                        currentScreen = Screen.GAME
+                    }
+                },
+                onBack = { currentScreen = Screen.PVE_MODE_SELECT }
             )
 
             Screen.SELECT_WORD_LENGTH -> WordLengthSelectionScreen(

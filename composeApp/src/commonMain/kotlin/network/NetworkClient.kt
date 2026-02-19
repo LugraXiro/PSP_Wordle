@@ -10,8 +10,12 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
+import java.util.UUID
 
 class NetworkClient {
+    val clientId: String = UUID.randomUUID().toString().substring(0, 4)
+    val clientTag: String = "CLIENT-$clientId"
+
     private var socket: Socket? = null
     private var input: BufferedReader? = null
     private var output: PrintWriter? = null
@@ -25,7 +29,7 @@ class NetworkClient {
     
     suspend fun connect(host: String, port: Int): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            FileLogger.info("CLIENT", "🔌 Conectando al servidor $host:$port...")
+            FileLogger.info(clientTag, "🔌 Conectando al servidor $host:$port...")
             disconnect()
 
             socket = Socket(host, port)
@@ -33,7 +37,7 @@ class NetworkClient {
             output = PrintWriter(socket!!.getOutputStream(), true)
 
             _connectionState.emit(true)
-            FileLogger.info("CLIENT", "✅ Conectado exitosamente a $host:$port")
+            FileLogger.info(clientTag, "✅ Conectado exitosamente a $host:$port")
 
             // Iniciar recepción de mensajes
             receiveJob = CoroutineScope(Dispatchers.IO).launch {
@@ -42,7 +46,7 @@ class NetworkClient {
 
             Result.success(Unit)
         } catch (e: Exception) {
-            FileLogger.error("CLIENT", "❌ Error conectando al servidor: ${e.message}")
+            FileLogger.error(clientTag, "❌ Error conectando al servidor: ${e.message}")
             _connectionState.emit(false)
             Result.failure(e)
         }
@@ -56,17 +60,17 @@ class NetworkClient {
 
                 try {
                     val message = kotlinx.serialization.json.Json.decodeFromString<Message>(line)
-                    FileLogger.debug("CLIENT", "📥 Recibido: ${message.type}")
+                    FileLogger.debug(clientTag, "📥 Recibido: ${message.type}")
                     _messagesFlow.emit(message)
                 } catch (e: Exception) {
-                    FileLogger.error("CLIENT", "❌ Error deserializando mensaje: '${line.take(100)}...' | Error: ${e.javaClass.simpleName}: ${e.message}")
+                    FileLogger.error(clientTag, "❌ Error deserializando mensaje: '${line.take(100)}...' | Error: ${e.javaClass.simpleName}: ${e.message}")
                 }
             }
         } catch (e: Exception) {
-            FileLogger.error("CLIENT", "❌ Error en bucle de recepción: ${e.javaClass.simpleName}: ${e.message}")
+            FileLogger.error(clientTag, "❌ Error en bucle de recepción: ${e.javaClass.simpleName}: ${e.message}")
             e.printStackTrace()
         } finally {
-            FileLogger.info("CLIENT", "🔌 Desconectado del servidor")
+            FileLogger.info(clientTag, "🔌 Desconectado del servidor")
             _connectionState.emit(false)
         }
     }
@@ -74,20 +78,20 @@ class NetworkClient {
     suspend fun send(type: String, payload: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             if (socket?.isConnected != true) {
-                FileLogger.error("CLIENT", "❌ Intento de envío fallido: Socket no conectado (tipo=$type)")
+                FileLogger.error(clientTag, "❌ Intento de envío fallido: Socket no conectado (tipo=$type)")
                 return@withContext Result.failure(Exception("No conectado al servidor"))
             }
 
             val message = Message(type, payload)
             val json = kotlinx.serialization.json.Json.encodeToString(Message.serializer(), message)
-            FileLogger.debug("CLIENT", "📨 Enviando: $type | Payload: ${payload.take(50)}${if (payload.length > 50) "..." else ""}")
+            FileLogger.debug(clientTag, "📨 Enviando: $type | Payload: ${payload.take(50)}${if (payload.length > 50) "..." else ""}")
 
             output?.println(json)
             output?.flush()
 
             Result.success(Unit)
         } catch (e: Exception) {
-            FileLogger.error("CLIENT", "❌ Error enviando mensaje tipo '$type': ${e.javaClass.simpleName}: ${e.message}")
+            FileLogger.error(clientTag, "❌ Error enviando mensaje tipo '$type': ${e.javaClass.simpleName}: ${e.message}")
             e.printStackTrace()
             Result.failure(e)
         }

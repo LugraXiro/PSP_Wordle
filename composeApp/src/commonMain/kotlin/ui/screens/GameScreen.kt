@@ -1,4 +1,5 @@
 package ui.screens
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import kotlinx.coroutines.launch
@@ -79,11 +81,11 @@ fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Mod
 
     if (showAbandonDialog) {
         AbandonConfirmDialog(
+            isPVP = uiState.mode == protocol.GameMode.PVP,
             onConfirm = {
                 showAbandonDialog = false
-                scope.launch {
-                    viewModel.abandonGame()
-                }
+                viewModel.backToMenu()
+                onBackToMenu()
             },
             onDismiss = { showAbandonDialog = false }
         )
@@ -91,13 +93,19 @@ fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Mod
 
     val isPVP = uiState.mode == protocol.GameMode.PVP
 
-    Row(
-        modifier = modifier
-            .fillMaxSize()
+    Box(modifier = modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
             .padding(16.dp)
             .focusRequester(focusRequester)
             .focusTarget()
             .onPreviewKeyEvent { keyEvent ->
+                if (keyEvent.type == KeyEventType.KeyDown && uiState.showInvalidWordDialog) {
+                    viewModel.dismissInvalidWordDialog()
+                    // Enter solo cierra el aviso (no reenvía la misma palabra inválida)
+                    return@onPreviewKeyEvent keyEvent.key == Key.Enter
+                }
                 if (keyEvent.type == KeyEventType.KeyDown && !uiState.showingRoundResult && !uiState.gameEnded) {
                     when {
                         // Letras A-Z
@@ -154,11 +162,16 @@ fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Mod
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Columna principal del juego
-        Box(
+        Column(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            // Contenido scrollable (grid + teclado)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
+            ) {
                 Text(
                     text = "Jugador: ${uiState.playerName}",
                     fontSize = 18.sp,
@@ -180,17 +193,47 @@ fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Mod
                     },
                     enabled = !uiState.showingRoundResult && !uiState.gameEnded
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = { showAbandonDialog = true },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Abandonar Partida")
-                }
-
                 uiState.error?.let { error -> Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) { Text(text = error, modifier = Modifier.padding(12.dp), color = MaterialTheme.colorScheme.onErrorContainer) }; LaunchedEffect(error) { kotlinx.coroutines.delay(3000); viewModel.clearError() } }
+            }
+            // Botones siempre visibles en la parte inferior
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = { viewModel.requestHint() },
+                        enabled = !uiState.hintUsed && uiState.isInGame && !uiState.showingRoundResult && !uiState.gameEnded,
+                        modifier = Modifier.focusProperties { canFocus = false }
+                    ) {
+                        Text(if (uiState.hintUsed) "Pista usada" else "Pista (-1000 pts)")
+                    }
+                    OutlinedButton(
+                        onClick = { showAbandonDialog = true },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier.focusProperties { canFocus = false }
+                    ) {
+                        Text("Salir de la partida")
+                    }
+                }
+                uiState.hintText?.let { hint ->
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                        )
+                    ) {
+                        Text(
+                            text = "Pista: $hint",
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+                }
             }
         }
 
@@ -203,7 +246,12 @@ fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Mod
                 modifier = Modifier.width(220.dp)
             )
         }
-    }
+        }  // end Row
+
+        if (uiState.showInvalidWordDialog) {
+            InvalidWordOverlay(onDismiss = { viewModel.dismissInvalidWordDialog() })
+        }
+    }  // end Box
 }
 
 @Composable
@@ -228,7 +276,7 @@ private fun PVPPlayersPanel(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            HorizontalDivider()
+            HorizontalHorizontalDivider()
             playersStatus.forEach { player ->
                 val isCurrentPlayer = player.playerName == currentPlayerName
                 Card(
@@ -363,16 +411,16 @@ private fun RoundResultDialog(won: Boolean, correctWord: String, roundScore: Int
 
 @Composable
 private fun GameEndDialog(finalScore: Int, roundsWon: Int, totalRounds: Int, isNewRecord: Boolean, onBackToMenu: () -> Unit) {
-    AlertDialog(onDismissRequest = {}, title = { Text(text = if (isNewRecord) "¡Nuevo Récord! 🏆" else "Partida Terminada", fontSize = 24.sp, fontWeight = FontWeight.Bold) }, text = { Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) { if (isNewRecord) { Text(text = "🎊 ¡Has superado tu récord! 🎊", fontSize = 18.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) }; Text(text = "Puntuación Final", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(text = "$finalScore puntos", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary); Divider(); Text("Rondas ganadas: $roundsWon de $totalRounds"); Text("Porcentaje: ${(roundsWon * 100 / totalRounds)}%") } }, confirmButton = { Button(onClick = onBackToMenu, modifier = Modifier.fillMaxWidth()) { Text("Volver al Menú") } })
+    AlertDialog(onDismissRequest = {}, title = { Text(text = if (isNewRecord) "¡Nuevo Récord! 🏆" else "Partida Terminada", fontSize = 24.sp, fontWeight = FontWeight.Bold) }, text = { Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) { if (isNewRecord) { Text(text = "🎊 ¡Has superado tu récord! 🎊", fontSize = 18.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold) }; Text(text = "Puntuación Final", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(text = "$finalScore puntos", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary); HorizontalDivider(); Text("Rondas ganadas: $roundsWon de $totalRounds"); Text("Porcentaje: ${(roundsWon * 100 / totalRounds)}%") } }, confirmButton = { Button(onClick = onBackToMenu, modifier = Modifier.fillMaxWidth()) { Text("Volver al Menú") } })
 }
 
 @Composable
-private fun AbandonConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+private fun AbandonConfirmDialog(isPVP: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "¿Abandonar partida?",
+                text = "¿Salir de la partida?",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -383,7 +431,10 @@ private fun AbandonConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Si abandonas la partida, perderás toda la puntuación acumulada.",
+                    text = if (isPVP)
+                        "Si sales, la partida continuará para los demás jugadores. Tu puntuación no se guardará."
+                    else
+                        "Si sales, la partida se detendrá y la puntuación no contará para los récords.",
                     fontSize = 16.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -402,7 +453,7 @@ private fun AbandonConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Abandonar")
+                Text("Salir")
             }
         },
         dismissButton = {
@@ -558,7 +609,7 @@ private fun PVPRoundResultDialog(
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Divider(modifier = Modifier.padding(vertical = 4.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
                     text = "Clasificación",
                     fontSize = 16.sp,
@@ -652,7 +703,7 @@ private fun PVPGameEndDialog(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Divider(modifier = Modifier.padding(vertical = 4.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
                     text = "Clasificación Final",
                     fontSize = 18.sp,
@@ -707,4 +758,52 @@ private fun WaitingForPlayersDialog(readyCount: Int, totalCount: Int) {
         },
         confirmButton = {}
     )
+}
+
+@Composable
+private fun InvalidWordOverlay(onDismiss: () -> Unit) {
+    // Auto-cierre tras 3 segundos como red de seguridad
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(3000)
+        onDismiss()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+            modifier = Modifier.padding(horizontal = 48.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp)
+            ) {
+                Text(
+                    text = "Palabra no válida",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+                Text(
+                    text = "Prueba con otra palabra",
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Pulsa cualquier tecla para continuar",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
+                )
+            }
+        }
+    }
 }

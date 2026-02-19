@@ -50,7 +50,11 @@ data class GameUiState(
     // PVP: esperando a otros jugadores entre rondas
     val waitingForPlayers: Boolean = false,
     val readyCount: Int = 0,
-    val totalPlayerCount: Int = 0
+    val totalPlayerCount: Int = 0,
+    val readyForNextRound: Boolean = false,
+    val showInvalidWordDialog: Boolean = false,
+    val hintText: String? = null,
+    val hintUsed: Boolean = false
 )
 
 class GameViewModel : ViewModel() {
@@ -79,14 +83,14 @@ class GameViewModel : ViewModel() {
             networkClient.connectionState.collect { connected ->
                 _uiState.update { it.copy(isConnected = connected) }
                 if (!connected && _uiState.value.isInGame) {
-                    FileLogger.error("CLIENT", "❌ Conexión perdida durante la partida (ronda ${_uiState.value.currentRound}/${_uiState.value.totalRounds})")
+                    FileLogger.error(networkClient.clientTag, "❌ Conexión perdida durante la partida (ronda ${_uiState.value.currentRound}/${_uiState.value.totalRounds})")
                     _uiState.update { it.copy(
                         error = "Conexión perdida con el servidor",
                         isInGame = false
                     )}
                     stopTimer()
                 } else if (!connected) {
-                    FileLogger.warning("CLIENT", "⚠️  Conexión con servidor perdida")
+                    FileLogger.warning(networkClient.clientTag, "⚠️  Conexión con servidor perdida")
                 }
             }
         }
@@ -95,14 +99,14 @@ class GameViewModel : ViewModel() {
     fun setPlayerName(name: String) {
         playerName = name
         _uiState.update { it.copy(playerName = playerName) }
-        FileLogger.info("CLIENT", "👤 Nombre del jugador establecido: $playerName")
+        FileLogger.info(networkClient.clientTag, "👤 Nombre del jugador establecido: $playerName")
     }
 
     suspend fun connect(host: String, port: Int): Boolean {
-        FileLogger.info("CLIENT", "🔌 Intentando conectar a $host:$port...")
+        FileLogger.info(networkClient.clientTag, "🔌 Intentando conectar a $host:$port...")
         val result = networkClient.connect(host, port)
         if (result.isSuccess) {
-            FileLogger.info("CLIENT", "✅ Conexión establecida exitosamente")
+            FileLogger.info(networkClient.clientTag, "✅ Conexión establecida exitosamente")
             // Enviar nombre del jugador al servidor
             sendPlayerName()
             // Solicitar records al conectar
@@ -110,7 +114,7 @@ class GameViewModel : ViewModel() {
             return true
         } else {
             val errorMsg = "Error al conectar a $host:$port: ${result.exceptionOrNull()?.javaClass?.simpleName}: ${result.exceptionOrNull()?.message}"
-            FileLogger.error("CLIENT", "❌ $errorMsg")
+            FileLogger.error(networkClient.clientTag, "❌ $errorMsg")
             _uiState.update { it.copy(error = errorMsg) }
             return false
         }
@@ -119,20 +123,21 @@ class GameViewModel : ViewModel() {
     private suspend fun sendPlayerName() {
         val payload = """{"playerName":"$playerName"}"""
         networkClient.send("SET_PLAYER_NAME", payload)
-        FileLogger.info("CLIENT", "📤 Nombre de jugador enviado: $playerName")
+        FileLogger.info(networkClient.clientTag, "📤 Nombre de jugador enviado: $playerName")
     }
     
     private suspend fun requestRecords() {
         networkClient.send("GET_RECORDS", "{}")
     }
     
-    suspend fun startGame(mode: GameMode, rounds: Int = 5, wordLength: Int = 5, maxAttempts: Int = 6) {
-        FileLogger.info("CLIENT", "🎮 Iniciando partida $mode (rounds=$rounds, wordLength=$wordLength)")
+    suspend fun startGame(mode: GameMode, rounds: Int = 5, wordLength: Int = 5, maxAttempts: Int = 6, saveRecords: Boolean = true) {
+        FileLogger.info(networkClient.clientTag, "🎮 Iniciando partida $mode (rounds=$rounds, wordLength=$wordLength, saveRecords=$saveRecords)")
         val request = StartGameRequest(
             mode = mode,
             rounds = rounds,
             wordLength = wordLength,
-            maxAttempts = maxAttempts
+            maxAttempts = maxAttempts,
+            saveRecords = saveRecords
         )
 
         val payload = json.encodeToString(StartGameRequest.serializer(), request)
@@ -188,7 +193,7 @@ class GameViewModel : ViewModel() {
                 }
                 "PLAYER_LEFT" -> {
                     val playerLeft = json.decodeFromString<PlayerLeft>(message.payload)
-                    FileLogger.info("CLIENT", "🚪 Jugador ${playerLeft.playerName} salió de la sala")
+                    FileLogger.info(networkClient.clientTag, "🚪 Jugador ${playerLeft.playerName} salió de la sala")
                 }
                 "PVP_ROUND_END" -> {
                     val pvpRoundEnd = json.decodeFromString<PVPRoundEnd>(message.payload)
@@ -200,7 +205,7 @@ class GameViewModel : ViewModel() {
                 }
                 "OPPONENT_UPDATE" -> {
                     val update = json.decodeFromString<OpponentUpdate>(message.payload)
-                    FileLogger.debug("CLIENT", "👤 Oponente: intentos=${update.opponentAttempts}, terminó=${update.opponentFinished}")
+                    FileLogger.debug(networkClient.clientTag, "👤 Oponente: intentos=${update.opponentAttempts}, terminó=${update.opponentFinished}")
                 }
                 "PLAYERS_STATUS" -> {
                     val update = json.decodeFromString<PlayersStatusUpdate>(message.payload)
@@ -213,22 +218,27 @@ class GameViewModel : ViewModel() {
                         totalPlayerCount = waiting.totalCount
                     )}
                 }
+                "HINT_RESPONSE" -> {
+                    val hint = json.decodeFromString<HintResponse>(message.payload)
+                    _uiState.update { it.copy(hintText = hint.hint, hintUsed = true) }
+                }
             }
         } catch (e: Exception) {
-            FileLogger.error("CLIENT", "❌ Error procesando mensaje ${message.type}: ${e.javaClass.simpleName}: ${e.message} | Payload: ${message.payload.take(100)}")
+            FileLogger.error(networkClient.clientTag, "❌ Error procesando mensaje ${message.type}: ${e.javaClass.simpleName}: ${e.message} | Payload: ${message.payload.take(100)}")
             e.printStackTrace()
         }
     }
     
     private fun handleGameStarted(gameStarted: GameStarted) {
-        // Si se está mostrando el resultado de la ronda anterior, guardar para procesar después
-        if (_uiState.value.showingRoundResult) {
-            FileLogger.info("CLIENT", "📦 Guardando GAME_STARTED pendiente (ronda ${gameStarted.currentRound}/${gameStarted.rounds}) mientras se muestra resultado")
+        // En PVE, si se está mostrando el resultado de la ronda anterior, guardar para procesar después
+        // En PVP, siempre procesar inmediatamente (el servidor controla el timing)
+        if (_uiState.value.showingRoundResult && gameStarted.mode != GameMode.PVP) {
+            FileLogger.info(networkClient.clientTag, "📦 Guardando GAME_STARTED pendiente (ronda ${gameStarted.currentRound}/${gameStarted.rounds}) mientras se muestra resultado")
             pendingGameStarted = gameStarted
             return
         }
 
-        FileLogger.info("CLIENT", "🎮 Ronda ${gameStarted.currentRound}/${gameStarted.rounds} iniciada")
+        FileLogger.info(networkClient.clientTag, "🎮 Ronda ${gameStarted.currentRound}/${gameStarted.rounds} iniciada")
         isSubmitting = false  // Resetear en nueva ronda
         roundStartTime = System.currentTimeMillis()
         startTimer()
@@ -249,8 +259,11 @@ class GameViewModel : ViewModel() {
                 correctWord = null,
                 showingRoundResult = false,
                 waitingForPlayers = false,
+                readyForNextRound = false,
                 gameEnded = false,
-                error = null
+                error = null,
+                hintText = null,
+                hintUsed = false
             )
         }
     }
@@ -283,7 +296,7 @@ class GameViewModel : ViewModel() {
     }
     
     private fun handleRoundEnd(roundEnd: RoundEnd) {
-        FileLogger.info("CLIENT", "🏁 Ronda finalizada: ${if (roundEnd.won) "GANADA" else "PERDIDA"}, score=${roundEnd.roundScore}, palabra=${roundEnd.correctWord}")
+        FileLogger.info(networkClient.clientTag, "🏁 Ronda finalizada: ${if (roundEnd.won) "GANADA" else "PERDIDA"}, score=${roundEnd.roundScore}, palabra=${roundEnd.correctWord}")
         stopTimer()
 
         _uiState.update {
@@ -299,7 +312,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun handleGameEnd(gameEnd: GameEnd) {
-        FileLogger.info("CLIENT", "🏆 Partida finalizada: score=${gameEnd.finalScore}, rondas ganadas=${gameEnd.roundsWon}/${gameEnd.totalRounds}, ${if (gameEnd.isNewRecord) "¡NUEVO RÉCORD!" else "sin récord"}")
+        FileLogger.info(networkClient.clientTag, "🏆 Partida finalizada: score=${gameEnd.finalScore}, rondas ganadas=${gameEnd.roundsWon}/${gameEnd.totalRounds}, ${if (gameEnd.isNewRecord) "¡NUEVO RÉCORD!" else "sin récord"}")
         _uiState.update {
             it.copy(
                 gameEnded = true,
@@ -324,14 +337,21 @@ class GameViewModel : ViewModel() {
     
     private fun handleError(error: ErrorMessage) {
         isSubmitting = false  // Permitir reintento en caso de error
-        FileLogger.error("CLIENT", "❌ Error recibido del servidor: [${error.code}] ${error.message}")
-        _uiState.update {
-            it.copy(error = "${error.code}: ${error.message}")
+        FileLogger.error(networkClient.clientTag, "❌ Error recibido del servidor: [${error.code}] ${error.message}")
+        if (error.code == "INVALID_WORD") {
+            _uiState.update { it.copy(showInvalidWordDialog = true) }
+        } else {
+            _uiState.update { it.copy(error = "${error.code}: ${error.message}") }
         }
     }
 
+    fun dismissInvalidWordDialog() {
+        _uiState.update { it.copy(showInvalidWordDialog = false) }
+    }
+
     private fun handleGameAbandoned(abandoned: GameAbandoned) {
-        FileLogger.info("CLIENT", "🚪 Partida abandonada: ${abandoned.message}")
+        if (!_uiState.value.isInGame) return
+        FileLogger.info(networkClient.clientTag, "🚪 Partida abandonada: ${abandoned.message}")
         stopTimer()
         _uiState.update {
             it.copy(
@@ -343,11 +363,11 @@ class GameViewModel : ViewModel() {
 
     suspend fun abandonGame() {
         if (!_uiState.value.isInGame) {
-            FileLogger.warning("CLIENT", "⚠️  No hay partida activa para abandonar")
+            FileLogger.warning(networkClient.clientTag, "⚠️  No hay partida activa para abandonar")
             return
         }
 
-        FileLogger.info("CLIENT", "🚪 Solicitando abandonar partida...")
+        FileLogger.info(networkClient.clientTag, "🚪 Solicitando abandonar partida...")
         networkClient.send("ABANDON_GAME", "{}")
     }
 
@@ -368,7 +388,7 @@ class GameViewModel : ViewModel() {
     suspend fun submitGuess() {
         // Prevenir envíos múltiples
         if (isSubmitting) {
-            FileLogger.debug("CLIENT", "⚠️  Ya hay un envío en progreso, ignorando")
+            FileLogger.debug(networkClient.clientTag, "⚠️  Ya hay un envío en progreso, ignorando")
             return
         }
 
@@ -376,23 +396,23 @@ class GameViewModel : ViewModel() {
         val wordLength = _uiState.value.wordLength
         val attemptNumber = _uiState.value.attempts.size + 1
 
-        FileLogger.debug("CLIENT", "🎯 Intentando enviar palabra: '$input' (longitud=$wordLength)")
+        FileLogger.debug(networkClient.clientTag, "🎯 Intentando enviar palabra: '$input' (longitud=$wordLength)")
 
         if (input.length != wordLength) {
-            FileLogger.debug("CLIENT", "⚠️  Longitud incorrecta: ${input.length} != $wordLength")
+            FileLogger.debug(networkClient.clientTag, "⚠️  Longitud incorrecta: ${input.length} != $wordLength")
             _uiState.update { it.copy(error = "La palabra debe tener $wordLength letras") }
             return
         }
 
         if (!_uiState.value.isInGame) {
-            FileLogger.debug("CLIENT", "⚠️  No hay partida activa")
+            FileLogger.debug(networkClient.clientTag, "⚠️  No hay partida activa")
             _uiState.update { it.copy(error = "No hay partida activa") }
             return
         }
 
         isSubmitting = true
         try {
-            FileLogger.info("CLIENT", "📨 Enviando intento: $input")
+            FileLogger.info(networkClient.clientTag, "📨 Enviando intento: $input")
             val guess = GuessRequest(
                 word = input,
                 attemptNumber = attemptNumber
@@ -402,35 +422,42 @@ class GameViewModel : ViewModel() {
             val result = networkClient.send("GUESS", payload)
 
             if (result.isFailure) {
-                FileLogger.error("CLIENT", "❌ Error al enviar GUESS: ${result.exceptionOrNull()?.message}")
+                FileLogger.error(networkClient.clientTag, "❌ Error al enviar GUESS: ${result.exceptionOrNull()?.message}")
                 _uiState.update { it.copy(error = "Error al enviar: ${result.exceptionOrNull()?.message}") }
                 isSubmitting = false
             } else {
-                FileLogger.debug("CLIENT", "✅ GUESS enviado exitosamente")
+                FileLogger.debug(networkClient.clientTag, "✅ GUESS enviado exitosamente")
                 // isSubmitting se pondrá en false cuando recibamos GUESS_RESULT
             }
         } catch (e: Exception) {
-            FileLogger.error("CLIENT", "❌ Excepción en submitGuess: ${e.message}")
+            FileLogger.error(networkClient.clientTag, "❌ Excepción en submitGuess: ${e.message}")
             isSubmitting = false
         }
     }
     
+    fun sendReadyForNextRound() {
+        if (_uiState.value.readyForNextRound) return
+        _uiState.update { it.copy(readyForNextRound = true) }
+        viewModelScope.launch {
+            networkClient.send("READY_NEXT_ROUND", "{}")
+            FileLogger.info(networkClient.clientTag, "📤 READY_NEXT_ROUND enviado")
+        }
+    }
+
+    fun requestHint() {
+        if (_uiState.value.hintUsed || !_uiState.value.isInGame) return
+        viewModelScope.launch {
+            networkClient.send("REQUEST_HINT", "{}")
+            FileLogger.info(networkClient.clientTag, "📤 REQUEST_HINT enviado")
+        }
+    }
+
     fun continueToNextRound() {
         _uiState.update { it.copy(showingRoundResult = false) }
 
-        // En PVP, enviar señal de listo y esperar a los demás
-        if (_uiState.value.mode == GameMode.PVP) {
-            _uiState.update { it.copy(waitingForPlayers = true, readyCount = 0, totalPlayerCount = 0) }
-            viewModelScope.launch {
-                networkClient.send("READY_NEXT_ROUND", "{}")
-                FileLogger.info("CLIENT", "📤 READY_NEXT_ROUND enviado")
-            }
-            return
-        }
-
-        // Si hay un GAME_STARTED pendiente, procesarlo ahora
+        // Si hay un GAME_STARTED pendiente, procesarlo ahora (PVE)
         pendingGameStarted?.let { gameStarted ->
-            FileLogger.info("CLIENT", "📦 Procesando GAME_STARTED pendiente")
+            FileLogger.info(networkClient.clientTag, "📦 Procesando GAME_STARTED pendiente")
             pendingGameStarted = null
             handleGameStarted(gameStarted)
         }
@@ -439,7 +466,7 @@ class GameViewModel : ViewModel() {
     // ==================== PVP ROOM HANDLERS ====================
 
     private fun handleRoomCreated(roomCreated: RoomCreated) {
-        FileLogger.info("CLIENT", "🏠 Sala creada: ${roomCreated.roomId}")
+        FileLogger.info(networkClient.clientTag, "🏠 Sala creada: ${roomCreated.roomId}")
         _uiState.update { it.copy(
             currentRoomId = roomCreated.roomId,
             isHost = true
@@ -447,7 +474,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun handleRoomJoined(roomJoined: RoomJoined) {
-        FileLogger.info("CLIENT", "🏠 Unido a sala: ${roomJoined.roomId}")
+        FileLogger.info(networkClient.clientTag, "🏠 Unido a sala: ${roomJoined.roomId}")
         _uiState.update { it.copy(
             currentRoomId = roomJoined.roomId,
             roomPlayers = roomJoined.players,
@@ -456,7 +483,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun handleRoomUpdate(roomUpdate: RoomUpdate) {
-        FileLogger.info("CLIENT", "🏠 Sala ${roomUpdate.roomId} actualizada: ${roomUpdate.players}")
+        FileLogger.info(networkClient.clientTag, "🏠 Sala ${roomUpdate.roomId} actualizada: ${roomUpdate.players}")
         _uiState.update { it.copy(
             roomPlayers = roomUpdate.players,
             roomHostName = roomUpdate.hostName
@@ -464,12 +491,12 @@ class GameViewModel : ViewModel() {
     }
 
     private fun handleRoomList(roomList: RoomListResponse) {
-        FileLogger.debug("CLIENT", "🏠 Salas disponibles: ${roomList.rooms.size}")
+        FileLogger.debug(networkClient.clientTag, "🏠 Salas disponibles: ${roomList.rooms.size}")
         _uiState.update { it.copy(rooms = roomList.rooms) }
     }
 
     private fun handlePVPRoundEnd(pvpRoundEnd: PVPRoundEnd) {
-        FileLogger.info("CLIENT", "🏁 PVP Ronda finalizada: ${if (pvpRoundEnd.won) "GANADA" else "PERDIDA"}, score=${pvpRoundEnd.roundScore}")
+        FileLogger.info(networkClient.clientTag, "🏁 PVP Ronda finalizada: ${if (pvpRoundEnd.won) "GANADA" else "PERDIDA"}, score=${pvpRoundEnd.roundScore}")
         stopTimer()
         _uiState.update { it.copy(
             correctWord = pvpRoundEnd.correctWord,
@@ -478,18 +505,22 @@ class GameViewModel : ViewModel() {
             roundsWon = if (pvpRoundEnd.won) it.roundsWon + 1 else it.roundsWon,
             showingRoundResult = true,
             pvpRankings = pvpRoundEnd.rankings,
-            timeRemaining = (90 - pvpRoundEnd.timeSeconds).coerceAtLeast(0)
+            timeRemaining = (90 - pvpRoundEnd.timeSeconds).coerceAtLeast(0),
+            readyForNextRound = false,
+            readyCount = 0,
+            totalPlayerCount = 0
         )}
     }
 
     private fun handlePVPGameEnd(pvpGameEnd: PVPGameEnd) {
-        FileLogger.info("CLIENT", "🏆 PVP Partida finalizada: score=${pvpGameEnd.finalScore}, ${if (pvpGameEnd.isNewRecord) "¡NUEVO RÉCORD!" else "sin récord"}")
+        FileLogger.info(networkClient.clientTag, "🏆 PVP Partida finalizada: score=${pvpGameEnd.finalScore}, ${if (pvpGameEnd.isNewRecord) "¡NUEVO RÉCORD!" else "sin récord"}")
         _uiState.update { it.copy(
             gameEnded = true,
             finalScore = pvpGameEnd.finalScore,
             isNewRecord = pvpGameEnd.isNewRecord,
             pvpRankings = pvpGameEnd.rankings,
-            isInGame = false
+            isInGame = false,
+            showingRoundResult = false
         )}
     }
 
@@ -524,6 +555,10 @@ class GameViewModel : ViewModel() {
 
     fun backToMenu() {
         stopTimer()
+        // Capturar estado ANTES de resetearlo para notificar al servidor correctamente
+        val wasInGame = _uiState.value.isInGame
+        val wasInRoom = _uiState.value.currentRoomId != null
+
         _uiState.update { GameUiState(
             isConnected = _uiState.value.isConnected,
             playerName = _uiState.value.playerName,
@@ -536,6 +571,14 @@ class GameViewModel : ViewModel() {
             pvpRankings = emptyList(),
             pvpPlayersStatus = emptyList()
         )}
+        viewModelScope.launch {
+            // Notificar al servidor según el estado previo
+            when {
+                wasInGame -> networkClient.send("ABANDON_GAME", "{}")
+                wasInRoom -> networkClient.send("LEAVE_ROOM", "{}")
+            }
+            requestRecords()
+        }
     }
     
     fun clearError() {
