@@ -23,7 +23,9 @@ private data class AllStats(
  *
  * @param statsFile Archivo JSON donde se persistirán las estadísticas.
  */
-class StatsManager(private val statsFile: File = File("stats.json")) {
+class StatsManager(
+    private val statsFile: File = if (File("server").isDirectory) File("server", "stats.json") else File("stats.json")
+) {
     private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
     private val lock = ReentrantReadWriteLock()
     private var allStats = AllStats()

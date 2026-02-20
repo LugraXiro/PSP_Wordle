@@ -33,12 +33,13 @@ data class Records(
  *
  * @param recordsFile Ruta al archivo JSON donde se guardan los récords.
  */
-class RecordsManager(private val recordsFile: String = "records.json") {
+class RecordsManager(recordsFile: String = "records.json") {
 
     companion object {
         val SUPPORTED_LENGTHS = listOf(4, 5, 6, 7)
     }
 
+    private val file: File = if (File("server").isDirectory) File("server", recordsFile) else File(recordsFile)
     private val json = Json {
         prettyPrint = true
         ignoreUnknownKeys = true
@@ -51,7 +52,6 @@ class RecordsManager(private val recordsFile: String = "records.json") {
     }
 
     private fun loadRecords() {
-        val file = File(recordsFile)
         if (file.exists()) {
             try {
                 val content = file.readText()
@@ -62,13 +62,13 @@ class RecordsManager(private val recordsFile: String = "records.json") {
 
                 val totalPve = records.pveRecordsByLength.values.sumOf { it.size }
                 val totalPvp = records.pvpRecordsByLength.values.sumOf { it.size }
-                FileLogger.info("SERVER", "✅ Records cargados desde '$recordsFile': $totalPve récords PVE, $totalPvp récords PVP")
+                FileLogger.info("SERVER", "✅ Records cargados desde '${file.path}': $totalPve récords PVE, $totalPvp récords PVP")
             } catch (e: Exception) {
-                FileLogger.warning("SERVER", "⚠️  Error parseando archivo de records '$recordsFile': ${e.javaClass.simpleName}: ${e.message}. Creando archivo nuevo")
+                FileLogger.warning("SERVER", "⚠️  Error parseando archivo de records '${file.path}': ${e.javaClass.simpleName}: ${e.message}. Creando archivo nuevo")
                 saveRecords()
             }
         } else {
-            FileLogger.info("SERVER", "📝 Archivo de records '$recordsFile' no existe. Creando nuevo vacío")
+            FileLogger.info("SERVER", "📝 Archivo de records '${file.path}' no existe. Creando nuevo vacío")
             initializeEmptyRecords()
             saveRecords()
         }
@@ -123,10 +123,10 @@ class RecordsManager(private val recordsFile: String = "records.json") {
     private fun saveRecords() {
         try {
             val content = json.encodeToString(Records.serializer(), records)
-            File(recordsFile).writeText(content)
+            file.writeText(content)
             val totalPve = records.pveRecordsByLength.values.sumOf { it.size }
             val totalPvp = records.pvpRecordsByLength.values.sumOf { it.size }
-            FileLogger.debug("SERVER", "💾 Records guardados en '$recordsFile': $totalPve PVE, $totalPvp PVP")
+            FileLogger.debug("SERVER", "💾 Records guardados en '${file.path}': $totalPve PVE, $totalPvp PVP")
         } catch (e: Exception) {
             FileLogger.error("SERVER", "❌ Error crítico al guardar records en '$recordsFile': ${e.javaClass.simpleName}: ${e.message}")
             e.printStackTrace()

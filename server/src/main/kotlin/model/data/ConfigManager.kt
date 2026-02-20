@@ -27,9 +27,22 @@ data class ServerConfig(
  */
 class ConfigManager(private val configFile: String = "server.properties") {
 
+    /**
+     * Resuelve el archivo de configuración probando varias rutas candidatas.
+     * Prioriza `server/<configFile>` (módulo server) sobre la ruta tal como se pasó,
+     * para que funcione tanto si el workingDir es la raíz del proyecto como si es server/.
+     */
+    private fun resolveFile(): File {
+        val candidates = listOf(
+            File("server", configFile),
+            File(configFile)
+        )
+        return candidates.firstOrNull { it.exists() } ?: File(configFile)
+    }
+
     fun loadConfig(): ServerConfig {
         val props = Properties()
-        val file = File(configFile)
+        val file = resolveFile()
 
         return if (file.exists()) {
             try {

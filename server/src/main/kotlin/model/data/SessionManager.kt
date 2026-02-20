@@ -41,8 +41,9 @@ private data class SessionsStore(val sessions: List<GameSession> = emptyList())
  *
  * @param sessionsFile Ruta al archivo JSON donde se guardan las sesiones.
  */
-class SessionManager(private val sessionsFile: String = "sessions.json") {
+class SessionManager(sessionsFile: String = "sessions.json") {
 
+    private val file: File = if (File("server").isDirectory) File("server", sessionsFile) else File(sessionsFile)
     private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
     private val sessions = ConcurrentHashMap<String, GameSession>()
     private val expirationMs = 2 * 60 * 60 * 1000L // 2 horas
@@ -52,10 +53,10 @@ class SessionManager(private val sessionsFile: String = "sessions.json") {
     }
 
     private fun loadSessions() {
-        val file = File(sessionsFile)
         if (!file.exists()) return
         try {
             val store = json.decodeFromString<SessionsStore>(file.readText())
+
             val now = System.currentTimeMillis()
             var expired = 0
             store.sessions.forEach { session ->
@@ -75,7 +76,7 @@ class SessionManager(private val sessionsFile: String = "sessions.json") {
     private fun saveToDisk() {
         try {
             val store = SessionsStore(sessions = sessions.values.toList())
-            File(sessionsFile).writeText(json.encodeToString(SessionsStore.serializer(), store))
+            file.writeText(json.encodeToString(SessionsStore.serializer(), store))
         } catch (e: Exception) {
             FileLogger.error("SERVER", "❌ Error guardando sesiones en disco: ${e.message}")
         }

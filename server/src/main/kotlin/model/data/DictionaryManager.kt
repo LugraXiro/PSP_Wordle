@@ -61,11 +61,25 @@ class DictionaryManager(private val dictionaryDir: String = "dictionaries") {
         loadAllDictionaries()
     }
 
+    /**
+     * Busca el directorio de diccionarios probando varias rutas candidatas:
+     * primero la ruta tal como se pasó (funciona cuando el workingDir es server/),
+     * luego prefijada con "server/" (funciona cuando el workingDir es la raíz del proyecto).
+     */
+    private fun resolveDir(): File {
+        val candidates = listOf(
+            File(dictionaryDir),
+            File("server", dictionaryDir)
+        )
+        return candidates.firstOrNull { it.exists() && it.isDirectory }
+            ?: File(dictionaryDir)  // fallback: la ruta original (para que el log de error sea claro)
+    }
+
     private fun loadAllDictionaries() {
         val solutions = mutableMapOf<Int, List<WordData>>()
         val validWords = mutableMapOf<Int, Set<String>>()
 
-        val dir = File(dictionaryDir)
+        val dir = resolveDir()
 
         // Intentar cargar diccionarios por longitud
         if (dir.exists() && dir.isDirectory) {
