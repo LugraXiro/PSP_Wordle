@@ -12,6 +12,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Barra de estado de la partida.
+ *
+ * Muestra en una fila cuatro indicadores: ronda actual, intentos usados,
+ * tiempo restante (en rojo cuando quedan ≤10 s) y puntuación acumulada.
+ *
+ * @param currentRound Ronda en curso.
+ * @param totalRounds Total de rondas de la partida.
+ * @param attemptsUsed Intentos realizados en la ronda actual.
+ * @param maxAttempts Máximo de intentos permitidos por ronda.
+ * @param timeElapsed Segundos restantes en la ronda.
+ * @param score Puntuación total acumulada.
+ */
 @Composable
 fun StatusPanel(
     currentRound: Int,

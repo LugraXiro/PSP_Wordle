@@ -6,6 +6,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import protocol.LetterResult
 
+/**
+ * Cuadrícula de intentos del juego Wordle.
+ *
+ * Renderiza [maxAttempts] filas de [wordLength] celdas [LetterCell]:
+ * - Filas ya enviadas: muestran letra y resultado con animación de flip escalonada.
+ * - Fila activa: muestra el texto que el jugador está escribiendo ([currentInput]).
+ * - Filas vacías: celdas en blanco.
+ *
+ * @param attempts Lista de resultados de intentos ya resueltos por el servidor.
+ * @param currentInput Texto introducido por el jugador en la fila activa.
+ * @param maxAttempts Número máximo de intentos (determina el número de filas).
+ * @param wordLength Longitud de la palabra objetivo (determina el número de columnas).
+ */
 @Composable
 fun WordGrid(
     attempts: List<List<LetterResult>>,

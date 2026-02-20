@@ -13,6 +13,14 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.UUID
 
+/**
+ * Implementación JVM de [NetworkClient] para Compose Desktop.
+ *
+ * Abre un socket TCP contra el servidor (timeout de conexión 10 s), envía
+ * mensajes JSON serializados con [send] y escucha respuestas en un hilo de IO
+ * dedicado, emitiéndolas a [messagesFlow]. Emite el estado de la conexión
+ * en [connectionState] (`true` = conectado, `false` = desconectado).
+ */
 actual class NetworkClient actual constructor() {
     actual val clientId: String = UUID.randomUUID().toString().substring(0, 4)
     actual val clientTag: String = "CLIENT-$clientId"

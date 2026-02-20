@@ -11,6 +11,10 @@ import logging.FileLogger
 import model.NetworkClient
 import protocol.*
 
+/**
+ * Estado observable de la UI del juego.
+ * Todos los campos son inmutables; se actualizan emitiendo nuevas copias desde [GameViewModel].
+ */
 data class GameUiState(
     val isConnected: Boolean = false,
     val isInGame: Boolean = false,
@@ -60,6 +64,16 @@ data class GameUiState(
     val savedSession: SessionAvailable? = null
 )
 
+/**
+ * ViewModel principal del cliente.
+ *
+ * Mantiene el estado de la UI en [uiState] y centraliza toda la comunicación
+ * con el servidor a través de [model.NetworkClient]. Gestiona:
+ * - Conexión y reconexión automática con backoff (3 intentos: 2 s, 5 s, 10 s).
+ * - Envío y recepción de mensajes del protocolo (PVE, PVP, récords, sesiones).
+ * - Temporizador local de ronda (cuenta atrás de 90 s).
+ * - Sesiones guardadas: permite reanudar una partida PVE interrumpida.
+ */
 class GameViewModel : ViewModel() {
     private val networkClient = NetworkClient()
     private val json = Json { ignoreUnknownKeys = true }

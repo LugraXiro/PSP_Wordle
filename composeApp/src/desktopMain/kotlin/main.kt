@@ -4,6 +4,10 @@ import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 
+/**
+ * Punto de entrada de la aplicación desktop (JVM).
+ * Crea la ventana principal de 800×900 px y lanza el composable raíz [App].
+ */
 fun main() = application {
     val mainWindowState = rememberWindowState(
         width = 800.dp,

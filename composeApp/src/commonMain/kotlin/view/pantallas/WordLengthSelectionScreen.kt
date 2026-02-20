@@ -11,6 +11,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import protocol.GameMode
 
+/**
+ * Pantalla de selección de longitud de palabra (4, 5, 6 o 7 letras).
+ * Paso previo al inicio de partida cuando el modo requiere elegir longitud manualmente.
+ *
+ * @param mode Modo de juego (PVE o PVP) para personalizar el título mostrado.
+ * @param onSelectWordLength Callback invocado con la longitud elegida.
+ * @param onBack Callback para volver a la pantalla anterior.
+ */
 @Composable
 fun WordLengthSelectionScreen(
     mode: GameMode,

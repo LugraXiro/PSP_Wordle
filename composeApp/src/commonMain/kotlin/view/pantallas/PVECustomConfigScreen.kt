@@ -12,6 +12,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Configuración de una partida personalizada PVE.
+ * Las partidas con esta configuración no cuentan para los récords globales.
+ */
 data class CustomGameConfig(
     val wordLength: Int,
     val rounds: Int,
@@ -30,6 +34,16 @@ private fun difficultyEmoji(wordLength: Int): String = when (wordLength) {
     else -> "🟡"
 }
 
+/**
+ * Pantalla de configuración personalizada de partida PVE.
+ *
+ * Permite elegir longitud de palabra (4-7 letras), número de rondas (3/5/7)
+ * e intentos por ronda (4/6/8/10) mediante grupos de botones seleccionables.
+ * Las partidas personalizadas no cuentan para los récords globales.
+ *
+ * @param onStart Callback invocado al pulsar "Iniciar Partida" con la [CustomGameConfig] elegida.
+ * @param onBack Callback para volver a la pantalla anterior.
+ */
 @Composable
 fun PVECustomConfigScreen(
     onStart: (CustomGameConfig) -> Unit,

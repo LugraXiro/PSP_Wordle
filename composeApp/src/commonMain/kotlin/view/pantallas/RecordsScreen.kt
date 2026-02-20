@@ -16,6 +16,16 @@ import protocol.PlayerStats
 import protocol.RecordEntry
 import viewmodel.GameViewModel
 
+/**
+ * Pantalla de récords y estadísticas personales.
+ *
+ * Muestra tablas Top-10 PVE y PVP filtradas por longitud de palabra (pestañas 4-7 letras).
+ * Para la longitud clásica (5 letras) muestra además las estadísticas propias del jugador:
+ * racha, porcentaje de aciertos y distribución de intentos.
+ *
+ * @param viewModel ViewModel compartido.
+ * @param onBack Callback para volver al menú principal.
+ */
 @Composable
 fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsState()

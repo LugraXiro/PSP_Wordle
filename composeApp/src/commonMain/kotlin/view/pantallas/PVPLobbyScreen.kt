@@ -15,6 +15,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import viewmodel.GameViewModel
 
+/**
+ * Pantalla de lobby PVP.
+ *
+ * Lista las salas disponibles con actualización automática cada 3 s.
+ * Permite crear una sala nueva o unirse a una existente. Navega automáticamente
+ * a [PVPRoomScreen] cuando el jugador entra en una sala.
+ *
+ * @param viewModel ViewModel compartido.
+ * @param onRoomCreated Callback invocado tras crear una sala con éxito.
+ * @param onRoomJoined Callback invocado tras unirse a una sala con éxito.
+ * @param onBack Callback para volver al menú principal.
+ */
 @Composable
 fun PVPLobbyScreen(
     viewModel: GameViewModel,

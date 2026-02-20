@@ -22,6 +22,17 @@ import protocol.PlayerScore
 import view.componentes.*
 import viewmodel.GameViewModel
 
+/**
+ * Pantalla principal de juego (PVE y PVP).
+ *
+ * Muestra el tablero de intentos, el teclado virtual y el panel de estado.
+ * En modo PVP incluye un panel lateral con el progreso del resto de jugadores.
+ * Gestiona el input de teclado físico e intercepta vocales con tilde normalizándolas.
+ * Muestra diálogos para: resultado de ronda, fin de partida, abandono y palabra inválida.
+ *
+ * @param viewModel ViewModel compartido con el resto de pantallas.
+ * @param onBackToMenu Callback invocado al volver al menú principal.
+ */
 @Composable
 fun GameScreen(viewModel: GameViewModel, onBackToMenu: () -> Unit, modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsState()

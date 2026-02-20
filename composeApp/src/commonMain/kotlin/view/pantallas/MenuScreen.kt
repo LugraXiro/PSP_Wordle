@@ -13,6 +13,20 @@ import kotlinx.coroutines.launch
 import viewmodel.GameViewModel
 import kotlin.system.exitProcess
 
+/**
+ * Pantalla de menú principal.
+ *
+ * Sin conexión: muestra formulario (nombre, host, puerto) y botón de conectar.
+ * Con conexión: muestra botones de modo de juego (PVE, PVP, récords).
+ * Si el servidor notifica una sesión PVE guardada, muestra un diálogo para
+ * reanudarla o descartarla. Incluye botón de salida con confirmación.
+ *
+ * @param viewModel ViewModel compartido.
+ * @param onStartPVE Navega al flujo de selección de modo PVE.
+ * @param onStartPVP Navega al lobby PVP.
+ * @param onViewRecords Navega a la pantalla de récords.
+ * @param onResumeGame Navega a [GameScreen] al confirmar la reanudación de partida guardada.
+ */
 @Composable
 fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () -> Unit, onViewRecords: () -> Unit, onResumeGame: () -> Unit, modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsState()

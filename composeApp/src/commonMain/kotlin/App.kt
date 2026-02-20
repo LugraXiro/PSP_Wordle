@@ -5,8 +5,17 @@ import protocol.GameMode
 import view.pantallas.*
 import viewmodel.GameViewModel
 
+/**
+ * Enum de pantallas de la aplicación.
+ * Cada valor representa una pantalla navegable desde [App].
+ */
 enum class Screen { MENU, PVE_MODE_SELECT, PVE_CUSTOM_CONFIG, SELECT_WORD_LENGTH, GAME, RECORDS, PVP_LOBBY, PVP_ROOM }
 
+/**
+ * Composable raíz de la aplicación.
+ * Gestiona la navegación entre pantallas con un estado [Screen] simple
+ * y un único [viewmodel.GameViewModel] compartido por todas ellas.
+ */
 @Composable
 fun App() {
     val viewModel = remember { GameViewModel() }

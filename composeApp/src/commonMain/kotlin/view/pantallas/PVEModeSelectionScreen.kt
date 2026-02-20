@@ -10,6 +10,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Pantalla de selección de modo PVE.
+ *
+ * Ofrece dos opciones: partida clásica (5 letras, 5 rondas, 6 intentos)
+ * o partida personalizada con configuración libre ([PVECustomConfigScreen]).
+ *
+ * @param onClassic Callback invocado al elegir partida clásica (inicia la partida directamente).
+ * @param onCustom Callback invocado al elegir partida personalizada (navega a configuración).
+ * @param onBack Callback para volver al menú principal.
+ */
 @Composable
 fun PVEModeSelectionScreen(
     onClassic: () -> Unit,

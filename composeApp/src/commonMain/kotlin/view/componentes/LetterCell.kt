@@ -20,6 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import protocol.LetterStatus
 
+/**
+ * Celda individual de una letra en el tablero de juego.
+ *
+ * El color de fondo refleja el [status]: verde (CORRECT), amarillo (PRESENT), gris (ABSENT).
+ * Si [shouldAnimate] es `true`, ejecuta una animación de flip al revelar el resultado,
+ * con retraso escalonado por posición configurable mediante [animationDelay].
+ *
+ * @param letter Letra a mostrar, o `null` para celda vacía.
+ * @param status Estado de la letra tras la validación del servidor, o `null` si aún no se ha enviado.
+ * @param shouldAnimate Si debe ejecutar la animación de flip al mostrar el resultado.
+ * @param animationDelay Milisegundos de retraso para escalonar la animación entre celdas de la misma fila.
+ */
 @Composable
 fun LetterCell(
     letter: Char?,

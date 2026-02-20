@@ -20,6 +20,19 @@ private val keyboardLayout = listOf(
     listOf('Z', 'X', 'C', 'V', 'B', 'N', 'M')
 )
 
+/**
+ * Teclado virtual QWERTY con soporte para Ñ.
+ *
+ * Colorea cada tecla según el mejor resultado conocido de esa letra:
+ * verde (CORRECT), amarillo (PRESENT) o gris (ABSENT).
+ * La fila inferior incluye los botones ENTER (izquierda) y borrar ⌫ (derecha).
+ *
+ * @param usedLetters Mapa de letras al [protocol.LetterStatus] más favorable conocido.
+ * @param onLetterClick Callback invocado al pulsar una tecla de letra.
+ * @param onDeleteClick Callback invocado al pulsar borrar.
+ * @param onEnterClick Callback invocado al pulsar ENTER.
+ * @param enabled Si `false`, todas las teclas se deshabilitan visualmente.
+ */
 @Composable
 fun VirtualKeyboard(
     usedLetters: Map<Char, LetterStatus>,

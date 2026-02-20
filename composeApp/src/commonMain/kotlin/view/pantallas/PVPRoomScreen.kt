@@ -13,6 +13,18 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import viewmodel.GameViewModel
 
+/**
+ * Pantalla de sala de espera PVP.
+ *
+ * Muestra el código de sala y la lista de jugadores conectados (hasta 4).
+ * El host puede iniciar la partida cuando hay al menos 2 jugadores.
+ * El resto ven un mensaje de espera. Navega automáticamente a [GameScreen]
+ * cuando el servidor arranca la partida.
+ *
+ * @param viewModel ViewModel compartido.
+ * @param onGameStarted Callback invocado cuando comienza la partida PVP.
+ * @param onBack Callback para salir de la sala y volver al lobby.
+ */
 @Composable
 fun PVPRoomScreen(
     viewModel: GameViewModel,
