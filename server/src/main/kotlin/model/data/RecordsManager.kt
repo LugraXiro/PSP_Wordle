@@ -128,7 +128,7 @@ class RecordsManager(recordsFile: String = "records.json") {
             val totalPvp = records.pvpRecordsByLength.values.sumOf { it.size }
             FileLogger.debug("SERVER", "💾 Records guardados en '${file.path}': $totalPve PVE, $totalPvp PVP")
         } catch (e: Exception) {
-            FileLogger.error("SERVER", "❌ Error crítico al guardar records en '$recordsFile': ${e.javaClass.simpleName}: ${e.message}")
+            FileLogger.error("SERVER", "❌ Error crítico al guardar records en '${file.path}': ${e.javaClass.simpleName}: ${e.message}")
             e.printStackTrace()
         }
     }

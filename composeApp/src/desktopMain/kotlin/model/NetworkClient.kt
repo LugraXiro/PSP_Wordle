@@ -11,6 +11,7 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketTimeoutException
 import java.util.UUID
 
 /**
@@ -66,7 +67,11 @@ actual class NetworkClient actual constructor() {
     private suspend fun receiveMessages() {
         try {
             while (socket?.isConnected == true) {
-                val line = input?.readLine() ?: break
+                val line = try {
+                    input?.readLine()
+                } catch (e: SocketTimeoutException) {
+                    continue  // Sin datos en 30 s, seguir esperando (el socket sigue vivo)
+                } ?: break
                 if (line.isBlank()) continue
 
                 try {
