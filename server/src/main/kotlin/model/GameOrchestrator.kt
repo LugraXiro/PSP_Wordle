@@ -24,6 +24,10 @@ class GameOrchestrator(
     private val activePVEGames = mutableMapOf<String, PVEGame>()
     private val activePVPGames = mutableMapOf<String, PVPGame>()
 
+    /**
+     * Crea e registra una nueva partida PVE para el jugador indicado.
+     * @return La instancia de [PVEGame] creada, lista para llamar a [PVEGame.start].
+     */
     fun createPVEGame(clientHandler: ClientHandler, config: GameConfig, playerName: String): PVEGame {
         val gameId = UUID.randomUUID().toString().substring(0, 8)
         val game = PVEGame(
@@ -39,6 +43,10 @@ class GameOrchestrator(
         return game
     }
 
+    /**
+     * Crea e registra una nueva partida PVP a partir de los jugadores de [room].
+     * @return La instancia de [PVPGame] creada, lista para llamar a [PVPGame.start].
+     */
     fun createPVPGame(room: Room): PVPGame {
         val gameId = UUID.randomUUID().toString().substring(0, 8)
         val config = GameConfig(
@@ -59,6 +67,7 @@ class GameOrchestrator(
         return game
     }
 
+    /** Elimina la partida con el identificador dado del registro interno (PVE o PVP). */
     fun removeGame(gameId: String) {
         activePVEGames.remove(gameId)
         activePVPGames.remove(gameId)

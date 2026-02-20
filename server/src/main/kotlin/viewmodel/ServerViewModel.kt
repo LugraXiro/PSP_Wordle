@@ -84,6 +84,7 @@ class ServerViewModel {
         return LogLine(text = line, level = level, clientId = clientId)
     }
 
+    /** Inicia el polling del archivo de logs y marca el estado del servidor como [ServerStatus.RUNNING]. */
     fun startPolling() {
         _status.value = ServerStatus.RUNNING
         pollingJob = scope.launch {
@@ -94,6 +95,7 @@ class ServerViewModel {
         }
     }
 
+    /** Detiene el polling y marca el servidor como [ServerStatus.STOPPED]. */
     fun stopPolling() {
         pollingJob?.cancel()
         _status.value = ServerStatus.STOPPED
@@ -110,16 +112,19 @@ class ServerViewModel {
         } catch (_: Exception) {}
     }
 
+    /** Borra el contenido del fichero de logs y limpia el estado en memoria. */
     fun clearLogs() {
         logFile?.writeText("")
         lastLines = emptyList()
         _logs.value = emptyList()
     }
 
+    /** Registra el callback que se invocará al pulsar "Apagar servidor" en la UI. */
     fun setShutdownCallback(callback: () -> Unit) {
         shutdownCallback = callback
     }
 
+    /** Invoca el callback de apagado registrado con [setShutdownCallback]. */
     fun shutdown() {
         shutdownCallback?.invoke()
     }

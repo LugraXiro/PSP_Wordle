@@ -60,6 +60,7 @@ class PVPGame(
         activePlayers.addAll(players)
     }
 
+    /** Inicia la partida ejecutando todas las rondas secuencialmente. */
     suspend fun start() {
         FileLogger.info("SERVER", "🎮 Iniciando partida PVP: $gameId con ${activePlayers.size} jugadores")
 
@@ -131,6 +132,11 @@ class PVPGame(
         timeoutJob.cancel()
     }
 
+    /**
+     * Procesa el intento de [client] durante la ronda activa.
+     * Valida longitud y pertenencia al diccionario, actualiza puntuaciones
+     * y comprueba si todos los jugadores han terminado la ronda.
+     */
     suspend fun handleGuess(client: ClientHandler, guess: GuessRequest) {
         val word = DictionaryManager.normalizeWord(guess.word)
         val name = playerNames[client] ?: "Desconocido"
@@ -288,6 +294,10 @@ class PVPGame(
         FileLogger.info("SERVER", "🏆 Partida PVP finalizada: $gameId | Rankings: ${rankings.joinToString { "${it.playerName}=${it.score}" }}")
     }
 
+    /**
+     * Envía la pista de la ronda actual a [client] con penalización de -1000 puntos.
+     * Solo se puede usar una vez por jugador por ronda.
+     */
     suspend fun handleRequestHint(client: ClientHandler) {
         if (!roundActive || playerFinished[client] == true) {
             sendToPlayer(client, "ERROR", json.encodeToString(ErrorMessage("ROUND_NOT_ACTIVE", "No hay ronda activa")))
@@ -305,6 +315,10 @@ class PVPGame(
         sendToPlayer(client, "HINT_RESPONSE", json.encodeToString(response))
     }
 
+    /**
+     * Marca a [client] como listo para la siguiente ronda.
+     * Cuando todos los jugadores activos están listos, la espera entre rondas termina.
+     */
     fun playerReady(client: ClientHandler) {
         if (!waitingForReady) return
         playersReady.add(client)
@@ -323,6 +337,10 @@ class PVPGame(
         }
     }
 
+    /**
+     * Retira a [client] de la partida (por desconexión o abandono).
+     * Si solo queda un jugador, finaliza la partida y le declara ganador.
+     */
     suspend fun removePlayer(client: ClientHandler) {
         val name = playerNames[client] ?: "Desconocido"
         activePlayers.remove(client)
@@ -356,6 +374,7 @@ class PVPGame(
         }
     }
 
+    /** Fuerza el fin inmediato de la partida sin guardar resultados. */
     fun abandon() {
         gameAbandoned = true
         roundActive = false

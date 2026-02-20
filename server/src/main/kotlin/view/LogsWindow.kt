@@ -125,6 +125,7 @@ class LogsWindow(private val viewModel: ServerViewModel) {
         LogLevel.DEFAULT -> defaultColor
     }
 
+    /** Hace visible la ventana y comienza a recibir actualizaciones de logs del ViewModel. */
     fun show() {
         SwingUtilities.invokeLater { frame.isVisible = true }
         scope.launch {
@@ -144,6 +145,7 @@ class LogsWindow(private val viewModel: ServerViewModel) {
         }
     }
 
+    /** Cancela la suscripción al ViewModel, oculta y libera la ventana Swing. */
     fun close() {
         scope.cancel()
         SwingUtilities.invokeLater {
@@ -152,6 +154,7 @@ class LogsWindow(private val viewModel: ServerViewModel) {
         }
     }
 
+    /** Registra un callback que se ejecuta cuando el usuario intenta cerrar la ventana. */
     fun addCloseListener(onClose: () -> Unit) {
         frame.addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
