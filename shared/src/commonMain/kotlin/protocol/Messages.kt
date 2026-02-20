@@ -216,6 +216,11 @@ data class HintResponse(
     val hint: String
 )
 
+@Serializable
+data class StatsResponse(
+    val stats: PlayerStats
+)
+
 // ==================== WRAPPER PARA DESERIALIZACIÓN ====================
 
 @Serializable

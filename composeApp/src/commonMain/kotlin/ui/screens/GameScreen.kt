@@ -276,7 +276,7 @@ private fun PVPPlayersPanel(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            HorizontalHorizontalDivider()
+            HorizontalDivider()
             playersStatus.forEach { player ->
                 val isCurrentPlayer = player.playerName == currentPlayerName
                 Card(

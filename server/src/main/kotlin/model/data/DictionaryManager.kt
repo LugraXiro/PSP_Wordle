@@ -1,3 +1,5 @@
+package model.data
+
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import logging.FileLogger
@@ -18,6 +20,16 @@ private data class SolutionEntry(
     val hint: String
 )
 
+/**
+ * Carga y sirve las palabras de los diccionarios del servidor.
+ *
+ * Soporta múltiples longitudes de palabra (4–7 letras) y varios formatos de archivo:
+ * - `20_solutions_N.json`: palabras solución con pistas (formato principal).
+ * - `10_valid_N.txt`: diccionario completo de palabras válidas para validación.
+ * - `soluciones_N.json` / `palabras_validas_N.json`: formatos legacy.
+ *
+ * @param dictionaryDir Directorio donde se encuentran los archivos de diccionario.
+ */
 class DictionaryManager(private val dictionaryDir: String = "dictionaries") {
 
     private val json = Json { ignoreUnknownKeys = true }

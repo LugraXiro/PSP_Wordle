@@ -1,6 +1,9 @@
+package model
+
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import logging.FileLogger
+import model.data.RecordsManager
 import protocol.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -8,19 +11,32 @@ import java.io.PrintWriter
 import java.net.Socket
 import java.util.*
 
+/**
+ * Maneja la comunicación de red con un único cliente conectado.
+ *
+ * Lee mensajes JSON del socket, los despacha al manejador correspondiente
+ * (inicio de partida, intento, salas PVP, récords, etc.) y envía respuestas al cliente.
+ * Cada instancia corresponde a una única conexión TCP activa.
+ *
+ * @param socket Socket TCP del cliente.
+ * @param gameOrchestrator Orquestador para crear y gestionar partidas.
+ * @param recordsManager Acceso a los récords para responder peticiones `GET_RECORDS`.
+ * @param roomManager Gestor de salas para el modo PVP.
+ */
 class ClientHandler(
     private val socket: Socket,
     private val gameOrchestrator: GameOrchestrator,
     private val recordsManager: RecordsManager,
     private val roomManager: RoomManager
 ) {
+    private val statsManager get() = gameOrchestrator.statsManager
     private val clientId = UUID.randomUUID().toString().substring(0, 8)
     private val input = BufferedReader(InputStreamReader(socket.getInputStream()))
     private val output = PrintWriter(socket.getOutputStream(), true)
     private val json = Json { ignoreUnknownKeys = true }
     private var currentGame: PVEGame? = null
-    private var currentPVPGame: PVPGame? = null
-    private var currentRoomId: String? = null
+    var currentPVPGame: PVPGame? = null
+    var currentRoomId: String? = null
     private var playerName: String = "Jugador"
 
     suspend fun handle() = coroutineScope {
@@ -70,6 +86,10 @@ class ClientHandler(
                 }
                 "GET_RECORDS" -> {
                     handleGetRecords()
+                }
+                "GET_STATS" -> {
+                    val stats = statsManager.getStats(playerName)
+                    send("STATS", json.encodeToString(StatsResponse.serializer(), StatsResponse(stats)))
                 }
                 "ABANDON_GAME" -> {
                     handleAbandonGame()

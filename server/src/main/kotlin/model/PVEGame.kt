@@ -1,16 +1,38 @@
+package model
+
 import kotlinx.coroutines.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import logging.FileLogger
+import model.data.DictionaryManager
+import model.data.RecordsManager
+import model.data.StatsManager
 import protocol.*
 import java.util.*
 
+/**
+ * Lógica de una partida Player vs Environment (un jugador contra el servidor).
+ *
+ * Gestiona múltiples rondas de Wordle: selecciona palabras, valida intentos,
+ * calcula puntuación con penalización opcional por pistas y aplica un timeout
+ * por ronda. Al finalizar, guarda el resultado en récords y estadísticas si
+ * la partida tiene `saveRecords = true`.
+ *
+ * @param gameId Identificador único de la partida.
+ * @param config Configuración de la partida (longitud de palabra, intentos, rondas, timeout).
+ * @param clientHandler Handler del cliente al que enviar los mensajes.
+ * @param dictionaryManager Fuente de palabras objetivo.
+ * @param recordsManager Donde guardar el récord final de la partida.
+ * @param statsManager Donde actualizar las estadísticas del jugador.
+ * @param playerName Nombre del jugador para logs y récords.
+ */
 class PVEGame(
     private val gameId: String,
     private val config: GameConfig,
     private val clientHandler: ClientHandler,
     private val dictionaryManager: DictionaryManager,
     private val recordsManager: RecordsManager,
+    private val statsManager: StatsManager,
     private val playerName: String
 ) {
     private val json = Json { ignoreUnknownKeys = true }
@@ -54,7 +76,7 @@ class PVEGame(
     }
 
     fun isAbandoned(): Boolean = gameAbandoned
-    
+
     private suspend fun playRound() {
         // Seleccionar palabra
         currentWord = dictionaryManager.getRandomWord(config.wordLength)
@@ -83,7 +105,7 @@ class PVEGame(
         roundActive = true
         roundHintUsed = false
         FileLogger.debug("SERVER", "🔵 Ronda $currentRound marcada como activa, esperando jugadas del jugador...")
-        
+
         // Timeout de 90 segundos
         val timeoutJob = CoroutineScope(Dispatchers.IO).launch {
             delay(config.timeoutSeconds * 1000L)
@@ -91,12 +113,6 @@ class PVEGame(
                 handleTimeout()
             }
         }
-
-        // Esperar intentos del jugador (se manejan en handleGuess)
-        // La ronda termina cuando:
-        // 1. El jugador acierta
-        // 2. Se agotan los intentos
-        // 3. Timeout
 
         // Esperar hasta que la ronda termine
         FileLogger.debug("SERVER", "🔄 Esperando a que termine la ronda $currentRound...")
@@ -107,7 +123,7 @@ class PVEGame(
 
         timeoutJob.cancel()
     }
-    
+
     suspend fun handleGuess(guess: GuessRequest) {
         // Normalizar palabra: mayúsculas y sin tildes (pero preservando Ñ)
         val word = DictionaryManager.normalizeWord(guess.word)
@@ -160,12 +176,12 @@ class PVEGame(
             endRound(false, timeElapsed)
         }
     }
-    
+
     private fun compareWords(guess: String, target: String): List<LetterResult> {
         val result = mutableListOf<LetterResult>()
         val targetChars = target.toMutableList()
         val guessChars = guess.toList()
-        
+
         // Primera pasada: marcar CORRECT
         for (i in guessChars.indices) {
             if (guessChars[i] == targetChars[i]) {
@@ -175,7 +191,7 @@ class PVEGame(
                 result.add(LetterResult(guessChars[i], LetterStatus.ABSENT)) // Temporal
             }
         }
-        
+
         // Segunda pasada: marcar PRESENT
         for (i in guessChars.indices) {
             if (result[i].status == LetterStatus.ABSENT) {
@@ -186,12 +202,16 @@ class PVEGame(
                 }
             }
         }
-        
+
         return result
     }
-    
+
     private suspend fun endRound(won: Boolean, timeSeconds: Int) {
         roundActive = false
+
+        if (config.saveRecords) {
+            statsManager.updateRound(playerName, won, currentAttempts, timeSeconds)
+        }
 
         val baseScore = if (won) {
             ((7 - currentAttempts) * 1000 - timeSeconds).coerceAtLeast(0)
@@ -220,7 +240,7 @@ class PVEGame(
         val delayTime = if (won) 5000L else 2000L
         delay(delayTime)
     }
-    
+
     private suspend fun handleTimeout() {
         if (!roundActive) return
 
@@ -231,6 +251,7 @@ class PVEGame(
 
     private suspend fun endGame() {
         val isNewRecord = if (config.saveRecords) {
+            statsManager.updateGame(playerName, roundsWon, config.rounds)
             recordsManager.updateScore(GameMode.PVE, playerName, totalScore, config.wordLength)
         } else {
             FileLogger.info("SERVER", "📊 Partida personalizada: puntuación no guardada en récords")
@@ -248,7 +269,7 @@ class PVEGame(
         )
         clientHandler.send("GAME_END", json.encodeToString(gameEnd))
     }
-    
+
     suspend fun handleRequestHint() {
         if (!roundActive) {
             sendError("ROUND_NOT_ACTIVE", "No hay ronda activa")

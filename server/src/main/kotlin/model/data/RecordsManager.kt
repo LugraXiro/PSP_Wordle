@@ -1,3 +1,5 @@
+package model.data
+
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import logging.FileLogger
@@ -8,6 +10,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
+/**
+ * Estructura de datos que almacena los récords de puntuación de partidas PVE y PVP,
+ * organizados por longitud de palabra. Incluye campos legacy para migración desde
+ * versiones anteriores del formato sin longitud de palabra.
+ */
 @Serializable
 data class Records(
     // Nueva estructura: wordLength -> lista de records
@@ -18,6 +25,14 @@ data class Records(
     var pvpRecords: MutableList<RecordEntry>? = null
 )
 
+/**
+ * Persiste y gestiona los récords globales de puntuación en disco.
+ *
+ * Mantiene un top 10 de jugadores por modo de juego (PVE/PVP) y longitud de palabra.
+ * Incluye migración automática desde el formato legacy de récords sin longitud de palabra.
+ *
+ * @param recordsFile Ruta al archivo JSON donde se guardan los récords.
+ */
 class RecordsManager(private val recordsFile: String = "records.json") {
 
     companion object {

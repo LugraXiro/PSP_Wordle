@@ -2,14 +2,17 @@ package ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import protocol.PlayerStats
 import protocol.RecordEntry
 import viewmodel.GameViewModel
 
@@ -20,9 +23,13 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
     val wordLengths = listOf(4, 5, 6, 7)
     var selectedLength by remember { mutableStateOf(5) }
 
+    LaunchedEffect(Unit) {
+        viewModel.requestStats()
+    }
+
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(
-            modifier = Modifier.width(700.dp).padding(24.dp).heightIn(max = 850.dp),
+            modifier = Modifier.width(700.dp).padding(24.dp).heightIn(max = 900.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Column(
@@ -37,7 +44,6 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                // Pestañas para seleccionar longitud de palabra
                 TabRow(
                     selectedTabIndex = wordLengths.indexOf(selectedLength),
                     modifier = Modifier.fillMaxWidth()
@@ -58,7 +64,6 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
 
                 HorizontalDivider()
 
-                // Contenido scrollable con los records
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -69,12 +74,17 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
                     val pveRecords = uiState.pveRecordsByLength[selectedLength] ?: emptyList()
                     val pvpRecords = uiState.pvpRecordsByLength[selectedLength] ?: emptyList()
 
+                    if (selectedLength == 5) {
+                        uiState.playerStats?.let { stats ->
+                            StatsPanel(stats = stats)
+                        }
+                    }
+
                     RecordTable(title = "Top 10 PVE", records = pveRecords)
                     Spacer(modifier = Modifier.height(8.dp))
                     RecordTable(title = "Top 10 PVP", records = pvpRecords)
                 }
 
-                // Botón volver
                 Button(
                     onClick = onBack,
                     modifier = Modifier.fillMaxWidth()
@@ -83,6 +93,118 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun StatsPanel(stats: PlayerStats) {
+    val winRate = if (stats.gamesPlayed > 0) stats.gamesWon * 100 / stats.gamesPlayed else 0
+    val wordPct = if (stats.totalWordsAttempted > 0) stats.totalWordsGuessed * 100 / stats.totalWordsAttempted else 0
+    val avgTime = if (stats.totalWordsGuessed > 0) stats.totalTimeSeconds / stats.totalWordsGuessed else 0L
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Mis Estadísticas · Clásico 5 letras",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                StatBubble(value = "${stats.gamesPlayed}", label = "Partidas\njugadas")
+                StatBubble(value = "$winRate%", label = "% Partidas\nganadas")
+                StatBubble(value = "${stats.currentStreak}", label = "Racha\nactual")
+                StatBubble(value = "${stats.maxStreak}", label = "Racha\nmáxima")
+            }
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                StatBubble(value = "$wordPct%", label = "Palabras\nacertadas")
+                StatBubble(value = "${avgTime}s", label = "Tiempo\npromedio")
+                StatBubble(value = "${stats.totalWordsGuessed}/${stats.totalWordsAttempted}", label = "Palabras\nresueltas")
+            }
+
+            if (stats.guessDistribution.isNotEmpty()) {
+                HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+                Text(
+                    text = "Distribución de intentos",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                val maxCount = stats.guessDistribution.values.maxOrNull() ?: 1
+                (1..6).forEach { attempt ->
+                    val count = stats.guessDistribution[attempt.toString()] ?: 0
+                    GuessDistributionRow(attempt = attempt, count = count, maxCount = maxCount)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatBubble(value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = value,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        Text(
+            text = label,
+            fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun GuessDistributionRow(attempt: Int, count: Int, maxCount: Int) {
+    Row(
+        modifier = Modifier.fillMaxWidth().height(22.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "$attempt",
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.width(16.dp),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        val fraction = if (maxCount > 0) count.toFloat() / maxCount else 0f
+        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth(fraction.coerceAtLeast(if (count > 0) 0.04f else 0f))
+                    .fillMaxHeight(),
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(4.dp)
+            ) {}
+        }
+        Text(
+            text = "$count",
+            fontSize = 13.sp,
+            modifier = Modifier.width(28.dp),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
 
@@ -123,7 +245,7 @@ private fun RecordTable(title: String, records: List<RecordEntry>, modifier: Mod
 
 @Composable
 private fun RecordRow(position: Int, record: RecordEntry) {
-    val medal = when (position) {
+    val label = when (position) {
         1 -> "1"
         2 -> "2"
         3 -> "3"
@@ -152,7 +274,7 @@ private fun RecordRow(position: Int, record: RecordEntry) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = medal,
+                    text = label,
                     fontSize = if (position <= 3) 24.sp else 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.width(45.dp)

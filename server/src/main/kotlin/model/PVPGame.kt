@@ -1,9 +1,28 @@
+package model
+
 import kotlinx.coroutines.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import logging.FileLogger
+import model.data.DictionaryManager
+import model.data.RecordsManager
 import protocol.*
 
+/**
+ * Lógica de una partida multijugador Player vs Player.
+ *
+ * Gestiona múltiples rondas sincronizadas entre varios jugadores: todos reciben
+ * la misma palabra y compiten en tiempo real. Entre rondas se coordina mediante
+ * un mecanismo de confirmación ("listo") con timeout de 15 segundos. Aplica
+ * timeout global por ronda y notifica a todos los jugadores el estado del resto.
+ *
+ * @param gameId Identificador único de la partida.
+ * @param config Configuración de la partida (longitud de palabra, intentos, rondas, timeout).
+ * @param players Lista de handlers de los jugadores participantes.
+ * @param playerNames Mapa de handler a nombre de jugador.
+ * @param dictionaryManager Fuente de palabras objetivo.
+ * @param recordsManager Donde guardar los récords finales de cada jugador.
+ */
 class PVPGame(
     val gameId: String,
     private val config: GameConfig,

@@ -1,15 +1,32 @@
+package model.data
+
 import logging.FileLogger
 import java.io.File
 import java.util.Properties
 
+/**
+ * Configuración de red del servidor, cargada desde `server.properties`.
+ *
+ * @property host Dirección IP o hostname en la que escucha el servidor.
+ * @property port Puerto TCP en el que escucha el servidor.
+ * @property maxClients Número máximo de clientes conectados simultáneamente.
+ */
 data class ServerConfig(
     val host: String,
     val port: Int,
     val maxClients: Int
 )
 
+/**
+ * Carga la configuración del servidor desde un archivo `.properties`.
+ *
+ * Si el archivo no existe, lo crea con valores por defecto
+ * (host: localhost, puerto: 5678, máximo de clientes: 10).
+ *
+ * @param configFile Ruta al archivo de configuración.
+ */
 class ConfigManager(private val configFile: String = "server.properties") {
-    
+
     fun loadConfig(): ServerConfig {
         val props = Properties()
         val file = File(configFile)
@@ -39,7 +56,7 @@ class ConfigManager(private val configFile: String = "server.properties") {
             )
         }
     }
-    
+
     private fun createDefaultConfig(file: File) {
         try {
             file.writeText("""

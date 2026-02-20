@@ -54,7 +54,8 @@ data class GameUiState(
     val readyForNextRound: Boolean = false,
     val showInvalidWordDialog: Boolean = false,
     val hintText: String? = null,
-    val hintUsed: Boolean = false
+    val hintUsed: Boolean = false,
+    val playerStats: PlayerStats? = null
 )
 
 class GameViewModel : ViewModel() {
@@ -128,6 +129,12 @@ class GameViewModel : ViewModel() {
     
     private suspend fun requestRecords() {
         networkClient.send("GET_RECORDS", "{}")
+    }
+
+    fun requestStats() {
+        viewModelScope.launch {
+            networkClient.send("GET_STATS", "{}")
+        }
     }
     
     suspend fun startGame(mode: GameMode, rounds: Int = 5, wordLength: Int = 5, maxAttempts: Int = 6, saveRecords: Boolean = true) {
@@ -221,6 +228,10 @@ class GameViewModel : ViewModel() {
                 "HINT_RESPONSE" -> {
                     val hint = json.decodeFromString<HintResponse>(message.payload)
                     _uiState.update { it.copy(hintText = hint.hint, hintUsed = true) }
+                }
+                "STATS" -> {
+                    val response = json.decodeFromString<StatsResponse>(message.payload)
+                    _uiState.update { it.copy(playerStats = response.stats) }
                 }
             }
         } catch (e: Exception) {

@@ -1,12 +1,28 @@
+package model
+
 import logging.FileLogger
 import protocol.RoomInfo
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Estado actual de una sala de espera PVP.
+ */
 enum class RoomStatus {
     WAITING, IN_GAME
 }
 
+/**
+ * Sala de espera para una partida PVP.
+ *
+ * Agrupa a los jugadores antes de que comience la partida. El primer jugador
+ * en crearla es el anfitrión (host) y el único con permiso para iniciarla.
+ *
+ * @param roomId Identificador único de la sala (6 caracteres en mayúsculas).
+ * @param host Handler del jugador anfitrión.
+ * @param hostName Nombre del jugador anfitrión.
+ * @param maxPlayers Número máximo de jugadores permitidos en la sala.
+ */
 class Room(
     val roomId: String,
     val host: ClientHandler,
@@ -40,6 +56,13 @@ class Room(
     )
 }
 
+/**
+ * Gestiona el conjunto de salas PVP activas en el servidor.
+ *
+ * Permite crear salas, unirse a ellas, salir y listar las disponibles.
+ * Las operaciones sobre la lista de jugadores de cada sala están sincronizadas
+ * para evitar condiciones de carrera con conexiones concurrentes.
+ */
 class RoomManager {
     private val rooms = ConcurrentHashMap<String, Room>()
 

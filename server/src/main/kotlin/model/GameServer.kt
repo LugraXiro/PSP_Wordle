@@ -1,15 +1,32 @@
+package model
+
 import kotlinx.coroutines.*
 import logging.FileLogger
+import model.data.DictionaryManager
+import model.data.RecordsManager
+import model.data.ServerConfig
+import model.data.StatsManager
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * Servidor TCP que acepta conexiones de clientes y lanza un [ClientHandler] por cada una.
+ *
+ * Gestiona el límite de clientes simultáneos y expone un mecanismo de apagado limpio
+ * que cierra el [java.net.ServerSocket] sin cortar conexiones en curso abruptamente.
+ *
+ * @param config Configuración de red (host, puerto, máximo de clientes).
+ * @param dictionaryManager Diccionario compartido por todas las partidas.
+ * @param recordsManager Récords compartidos por todas las partidas.
+ */
 class GameServer(
     private val config: ServerConfig,
     private val dictionaryManager: DictionaryManager,
     private val recordsManager: RecordsManager
 ) {
-    private val gameOrchestrator = GameOrchestrator(dictionaryManager, recordsManager)
+    private val statsManager = StatsManager()
+    private val gameOrchestrator = GameOrchestrator(dictionaryManager, recordsManager, statsManager)
     private val roomManager = RoomManager()
     private val activeClients = AtomicInteger(0)
     @Volatile private var serverSocket: ServerSocket? = null
