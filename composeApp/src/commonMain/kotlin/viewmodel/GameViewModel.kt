@@ -90,6 +90,7 @@ class GameViewModel : ViewModel() {
     private var lastPort: Int = 5678
     private var intentionalDisconnect = false
     private var isReconnectingInternal = false
+    private var isManuallyConnecting = false
     private var reconnectJob: Job? = null
 
     init {
@@ -104,7 +105,7 @@ class GameViewModel : ViewModel() {
         viewModelScope.launch {
             networkClient.connectionState.collect { connected ->
                 _uiState.update { it.copy(isConnected = connected) }
-                if (connected || intentionalDisconnect || isReconnectingInternal) return@collect
+                if (connected || intentionalDisconnect || isReconnectingInternal || isManuallyConnecting) return@collect
 
                 if (_uiState.value.isInGame) {
                     FileLogger.error(networkClient.clientTag, "❌ Conexión perdida durante la partida")
@@ -132,8 +133,13 @@ class GameViewModel : ViewModel() {
         lastHost = host
         lastPort = port
         intentionalDisconnect = false
+        isManuallyConnecting = true
+        reconnectJob?.cancel()
+        isReconnectingInternal = false
+        _uiState.update { it.copy(isReconnecting = false) }
         FileLogger.info(networkClient.clientTag, "🔌 Intentando conectar a $host:$port...")
         val result = networkClient.connect(host, port)
+        isManuallyConnecting = false
         if (result.isSuccess) {
             FileLogger.info(networkClient.clientTag, "✅ Conexión establecida exitosamente")
             sendPlayerName()

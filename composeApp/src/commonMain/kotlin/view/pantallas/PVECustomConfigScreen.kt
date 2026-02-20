@@ -56,7 +56,7 @@ fun PVECustomConfigScreen(
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(
-            modifier = Modifier.width(480.dp).padding(24.dp),
+            modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth().padding(24.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Column(

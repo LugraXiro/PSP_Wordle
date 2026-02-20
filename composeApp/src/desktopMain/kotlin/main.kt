@@ -20,6 +20,7 @@ fun main() = application {
         title = "Wordle Multiplatform",
         state = mainWindowState
     ) {
+        window.minimumSize = java.awt.Dimension(600, 700)
         App()
     }
 }

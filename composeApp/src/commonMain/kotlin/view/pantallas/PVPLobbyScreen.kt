@@ -59,7 +59,7 @@ fun PVPLobbyScreen(
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(
-            modifier = Modifier.width(500.dp).padding(24.dp),
+            modifier = Modifier.widthIn(max = 500.dp).fillMaxWidth().padding(24.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Column(

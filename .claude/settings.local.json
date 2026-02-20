@@ -18,7 +18,9 @@
       "Bash(./gradlew :server:run:*)",
       "Bash(netstat:*)",
       "Bash(taskkill:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(./gradlew clean:*)",
+      "Bash(ls:*)"
     ]
   }
 }

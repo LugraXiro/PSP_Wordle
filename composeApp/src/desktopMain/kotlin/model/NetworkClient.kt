@@ -41,7 +41,10 @@ actual class NetworkClient actual constructor() {
             FileLogger.info(clientTag, "🔌 Conectando al servidor $host:$port...")
             disconnect()
 
-            socket = Socket().also { it.connect(InetSocketAddress(host, port), 10_000) }
+            socket = Socket().also {
+                it.connect(InetSocketAddress(host, port), 10_000)
+                it.soTimeout = 30_000
+            }
             input = BufferedReader(InputStreamReader(socket!!.getInputStream()))
             output = PrintWriter(socket!!.getOutputStream(), true)
 

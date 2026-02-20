@@ -56,7 +56,7 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
     }
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Card(modifier = Modifier.width(450.dp).padding(24.dp), elevation = CardDefaults.cardElevation(8.dp)) {
+        Card(modifier = Modifier.widthIn(max = 450.dp).fillMaxWidth().padding(24.dp), elevation = CardDefaults.cardElevation(8.dp)) {
             Column(modifier = Modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(text = "🎮 WORDLE", fontSize = 48.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 Text(text = "Multiplatform", fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)

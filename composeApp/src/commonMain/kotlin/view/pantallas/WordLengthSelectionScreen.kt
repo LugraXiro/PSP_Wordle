@@ -30,7 +30,7 @@ fun WordLengthSelectionScreen(
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(
-            modifier = Modifier.width(450.dp).padding(24.dp),
+            modifier = Modifier.widthIn(max = 450.dp).fillMaxWidth().padding(24.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Column(

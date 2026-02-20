@@ -39,7 +39,7 @@ fun RecordsScreen(viewModel: GameViewModel, onBack: () -> Unit, modifier: Modifi
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Card(
-            modifier = Modifier.width(700.dp).padding(24.dp).heightIn(max = 900.dp),
+            modifier = Modifier.widthIn(max = 700.dp).fillMaxWidth().padding(24.dp).heightIn(max = 900.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
             Column(

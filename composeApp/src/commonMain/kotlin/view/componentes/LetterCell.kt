@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import protocol.LetterStatus
@@ -38,7 +39,8 @@ fun LetterCell(
     status: LetterStatus?,
     modifier: Modifier = Modifier,
     shouldAnimate: Boolean = false,
-    animationDelay: Int = 0
+    animationDelay: Int = 0,
+    cellSize: Dp = 62.dp
 ) {
     var animationPlayed by remember { mutableStateOf(false) }
 
@@ -83,7 +85,7 @@ fun LetterCell(
     
     Card(
         modifier = modifier
-            .size(62.dp)
+            .size(cellSize)
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 12f * density
@@ -99,7 +101,7 @@ fun LetterCell(
             if (letter != null) {
                 Text(
                     text = letter.toString(),
-                    fontSize = 32.sp,
+                    fontSize = (cellSize.value * 0.52f).sp,
                     fontWeight = FontWeight.Bold,
                     color = textColor
                 )

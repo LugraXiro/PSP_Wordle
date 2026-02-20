@@ -3,6 +3,7 @@ package view.componentes
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import protocol.LetterResult
 
@@ -38,45 +39,53 @@ fun WordGrid(
         }
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(5.dp)
-    ) {
-        repeat(maxAttempts) { attemptIndex ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                // Mostrar intentos previos
-                if (attemptIndex < attempts.size) {
-                    val attempt = attempts[attemptIndex]
-                    val shouldAnimate = shouldAnimateRow.value == attemptIndex
-                    repeat(wordLength) { letterIndex ->
-                        val letterResult = attempt.getOrNull(letterIndex)
-                        LetterCell(
-                            letter = letterResult?.letter,
-                            status = letterResult?.status,
-                            shouldAnimate = shouldAnimate,
-                            animationDelay = letterIndex * 100
-                        )
+    BoxWithConstraints(modifier = modifier) {
+        val spacing = 5.dp
+        val totalSpacing = spacing * (wordLength - 1)
+        val cellSize: Dp = if (maxWidth.value.isInfinite()) 62.dp
+                           else ((maxWidth - totalSpacing) / wordLength).coerceIn(32.dp, 62.dp)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(spacing)
+        ) {
+            repeat(maxAttempts) { attemptIndex ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(spacing)
+                ) {
+                    // Mostrar intentos previos
+                    if (attemptIndex < attempts.size) {
+                        val attempt = attempts[attemptIndex]
+                        val shouldAnimate = shouldAnimateRow.value == attemptIndex
+                        repeat(wordLength) { letterIndex ->
+                            val letterResult = attempt.getOrNull(letterIndex)
+                            LetterCell(
+                                letter = letterResult?.letter,
+                                status = letterResult?.status,
+                                shouldAnimate = shouldAnimate,
+                                animationDelay = letterIndex * 100,
+                                cellSize = cellSize
+                            )
+                        }
                     }
-                }
-                // Mostrar intento actual
-                else if (attemptIndex == attempts.size) {
-                    repeat(wordLength) { letterIndex ->
-                        val letter = currentInput.getOrNull(letterIndex)
-                        LetterCell(
-                            letter = letter,
-                            status = null
-                        )
+                    // Mostrar intento actual
+                    else if (attemptIndex == attempts.size) {
+                        repeat(wordLength) { letterIndex ->
+                            val letter = currentInput.getOrNull(letterIndex)
+                            LetterCell(
+                                letter = letter,
+                                status = null,
+                                cellSize = cellSize
+                            )
+                        }
                     }
-                }
-                // Mostrar filas vacías
-                else {
-                    repeat(wordLength) {
-                        LetterCell(
-                            letter = null,
-                            status = null
-                        )
+                    // Mostrar filas vacías
+                    else {
+                        repeat(wordLength) {
+                            LetterCell(
+                                letter = null,
+                                status = null,
+                                cellSize = cellSize
+                            )
+                        }
                     }
                 }
             }
