@@ -20,7 +20,8 @@ fun App() {
                 viewModel = viewModel,
                 onStartPVE = { currentScreen = Screen.PVE_MODE_SELECT },
                 onStartPVP = { currentScreen = Screen.PVP_LOBBY },
-                onViewRecords = { currentScreen = Screen.RECORDS }
+                onViewRecords = { currentScreen = Screen.RECORDS },
+                onResumeGame = { currentScreen = Screen.GAME }
             )
 
             Screen.PVE_MODE_SELECT -> PVEModeSelectionScreen(

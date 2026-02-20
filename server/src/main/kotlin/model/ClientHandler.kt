@@ -3,7 +3,9 @@ package model
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import logging.FileLogger
+import model.data.GameSession
 import model.data.RecordsManager
+import model.data.SessionManager
 import protocol.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -27,7 +29,8 @@ class ClientHandler(
     private val socket: Socket,
     private val gameOrchestrator: GameOrchestrator,
     private val recordsManager: RecordsManager,
-    private val roomManager: RoomManager
+    private val roomManager: RoomManager,
+    private val sessionManager: SessionManager
 ) {
     private val statsManager get() = gameOrchestrator.statsManager
     private val clientId = UUID.randomUUID().toString().substring(0, 8)
@@ -69,6 +72,17 @@ class ClientHandler(
                     val request = json.decodeFromString<SetPlayerNameRequest>(msg.payload)
                     playerName = request.playerName
                     FileLogger.info("SERVER", "👤 [$clientId] Nombre del jugador establecido: $playerName")
+                    val saved = sessionManager.getSession(playerName)
+                    if (saved != null) {
+                        val info = SessionAvailable(
+                            currentRound = saved.nextRound,
+                            totalRounds  = saved.config.rounds,
+                            totalScore   = saved.totalScore,
+                            wordLength   = saved.config.wordLength
+                        )
+                        send("SESSION_AVAILABLE", json.encodeToString(SessionAvailable.serializer(), info))
+                        FileLogger.info("SERVER", "📂 [$clientId] Sesión disponible para '$playerName': ronda ${saved.nextRound}/${saved.config.rounds}")
+                    }
                 }
                 "START_GAME" -> {
                     val request = json.decodeFromString<StartGameRequest>(msg.payload)
@@ -119,6 +133,11 @@ class ClientHandler(
                     } else {
                         currentGame?.handleRequestHint()
                     }
+                }
+                "RESUME_GAME" -> handleResumeGame()
+                "DISCARD_SESSION" -> {
+                    sessionManager.deleteSession(playerName)
+                    FileLogger.info("SERVER", "🗑️  [$clientId] Sesión descartada por '$playerName'")
                 }
                 else -> {
                     FileLogger.warning("SERVER", "⚠️  [$clientId] Tipo de mensaje desconocido: ${msg.type}, payload: ${msg.payload}")
@@ -293,6 +312,25 @@ class ClientHandler(
         send("RECORDS", json.encodeToString(RecordsResponse.serializer(), response))
     }
 
+    private suspend fun handleResumeGame() {
+        val session = sessionManager.getSession(playerName)
+        if (session == null) {
+            send("ERROR", json.encodeToString(ErrorMessage.serializer(), ErrorMessage("NO_SESSION", "No hay sesión guardada o ha expirado")))
+            return
+        }
+        sessionManager.deleteSession(playerName)
+        currentGame = gameOrchestrator.createPVEGame(this, session.config, playerName)
+        val game = currentGame!!
+        CoroutineScope(Dispatchers.IO).launch {
+            game.start(
+                resumeFromRound  = session.nextRound,
+                initialScore     = session.totalScore,
+                initialRoundsWon = session.roundsWon
+            )
+        }
+        FileLogger.info("SERVER", "▶️  [$clientId] Reanudando partida de '$playerName' desde ronda ${session.nextRound}/${session.config.rounds}")
+    }
+
     private suspend fun handleAbandonGame() {
         if (currentPVPGame != null) {
             currentPVPGame?.removePlayer(this)
@@ -310,6 +348,7 @@ class ClientHandler(
 
         currentGame?.abandon()
         currentGame = null
+        sessionManager.deleteSession(playerName) // Abandono explícito: borrar sesión guardada
     }
 
     fun send(type: String, payload: String) {
@@ -322,6 +361,23 @@ class ClientHandler(
 
     private fun cleanup() {
         FileLogger.info("SERVER", "👋 Cliente desconectado: $clientId")
+
+        // Si había partida PVE activa, guardar sesión para que pueda reanudarse
+        currentGame?.let { game ->
+            if (!game.isAbandoned()) {
+                val nextRound = if (game.isRoundActive()) game.getCurrentRound()
+                                else game.getCurrentRound() + 1
+                if (nextRound <= game.getConfig().rounds) {
+                    sessionManager.saveSession(GameSession(
+                        playerName = playerName,
+                        config     = game.getConfig(),
+                        nextRound  = nextRound,
+                        totalScore = game.getTotalScore(),
+                        roundsWon  = game.getRoundsWon()
+                    ))
+                }
+            }
+        }
 
         // Si estaba en una sala, salir
         currentRoomId?.let { roomId ->

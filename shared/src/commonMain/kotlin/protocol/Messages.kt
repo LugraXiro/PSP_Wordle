@@ -217,6 +217,14 @@ data class HintResponse(
 )
 
 @Serializable
+data class SessionAvailable(
+    val currentRound: Int,
+    val totalRounds: Int,
+    val totalScore: Int,
+    val wordLength: Int
+)
+
+@Serializable
 data class StatsResponse(
     val stats: PlayerStats
 )

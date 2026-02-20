@@ -1,120 +1,20 @@
 package model
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import logging.FileLogger
 import protocol.Message
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.PrintWriter
-import java.net.Socket
-import java.util.UUID
 
-class NetworkClient {
-    val clientId: String = UUID.randomUUID().toString().substring(0, 4)
-    val clientTag: String = "CLIENT-$clientId"
+/**
+ * Contrato de comunicación de red, independiente de plataforma.
+ * La implementación concreta reside en cada source set (desktopMain, etc.).
+ */
+expect class NetworkClient() {
+    val clientId: String
+    val clientTag: String
+    val messagesFlow: SharedFlow<Message>
+    val connectionState: SharedFlow<Boolean>
 
-    private var socket: Socket? = null
-    private var input: BufferedReader? = null
-    private var output: PrintWriter? = null
-    private var receiveJob: Job? = null
-    
-    private val _messagesFlow = MutableSharedFlow<Message>(replay = 0)
-    val messagesFlow: SharedFlow<Message> = _messagesFlow.asSharedFlow()
-    
-    private val _connectionState = MutableSharedFlow<Boolean>(replay = 1)
-    val connectionState: SharedFlow<Boolean> = _connectionState.asSharedFlow()
-    
-    suspend fun connect(host: String, port: Int): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            FileLogger.info(clientTag, "🔌 Conectando al servidor $host:$port...")
-            disconnect()
-
-            socket = Socket(host, port)
-            input = BufferedReader(InputStreamReader(socket!!.getInputStream()))
-            output = PrintWriter(socket!!.getOutputStream(), true)
-
-            _connectionState.emit(true)
-            FileLogger.info(clientTag, "✅ Conectado exitosamente a $host:$port")
-
-            // Iniciar recepción de mensajes
-            receiveJob = CoroutineScope(Dispatchers.IO).launch {
-                receiveMessages()
-            }
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            FileLogger.error(clientTag, "❌ Error conectando al servidor: ${e.message}")
-            _connectionState.emit(false)
-            Result.failure(e)
-        }
-    }
-    
-    private suspend fun receiveMessages() {
-        try {
-            while (socket?.isConnected == true) {
-                val line = input?.readLine() ?: break
-                if (line.isBlank()) continue
-
-                try {
-                    val message = kotlinx.serialization.json.Json.decodeFromString<Message>(line)
-                    FileLogger.debug(clientTag, "📥 Recibido: ${message.type}")
-                    _messagesFlow.emit(message)
-                } catch (e: Exception) {
-                    FileLogger.error(clientTag, "❌ Error deserializando mensaje: '${line.take(100)}...' | Error: ${e.javaClass.simpleName}: ${e.message}")
-                }
-            }
-        } catch (e: Exception) {
-            FileLogger.error(clientTag, "❌ Error en bucle de recepción: ${e.javaClass.simpleName}: ${e.message}")
-            e.printStackTrace()
-        } finally {
-            FileLogger.info(clientTag, "🔌 Desconectado del servidor")
-            _connectionState.emit(false)
-        }
-    }
-    
-    suspend fun send(type: String, payload: String): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            if (socket?.isConnected != true) {
-                FileLogger.error(clientTag, "❌ Intento de envío fallido: Socket no conectado (tipo=$type)")
-                return@withContext Result.failure(Exception("No conectado al servidor"))
-            }
-
-            val message = Message(type, payload)
-            val json = kotlinx.serialization.json.Json.encodeToString(Message.serializer(), message)
-            FileLogger.debug(clientTag, "📨 Enviando: $type | Payload: ${payload.take(50)}${if (payload.length > 50) "..." else ""}")
-
-            output?.println(json)
-            output?.flush()
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            FileLogger.error(clientTag, "❌ Error enviando mensaje tipo '$type': ${e.javaClass.simpleName}: ${e.message}")
-            e.printStackTrace()
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun disconnect() {
-        receiveJob?.cancel()
-        receiveJob = null
-        
-        try {
-            socket?.close()
-        } catch (e: Exception) {
-            // Ignorar errores al cerrar
-        }
-        
-        socket = null
-        input = null
-        output = null
-        
-        _connectionState.emit(false)
-    }
-    
-    fun isConnected(): Boolean {
-        return socket?.isConnected == true
-    }
+    suspend fun connect(host: String, port: Int): Result<Unit>
+    suspend fun send(type: String, payload: String): Result<Unit>
+    suspend fun disconnect()
+    fun isConnected(): Boolean
 }

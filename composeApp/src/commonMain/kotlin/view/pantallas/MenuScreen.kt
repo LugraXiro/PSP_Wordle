@@ -14,15 +14,16 @@ import viewmodel.GameViewModel
 import kotlin.system.exitProcess
 
 @Composable
-fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () -> Unit, onViewRecords: () -> Unit, modifier: Modifier = Modifier) {
+fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () -> Unit, onViewRecords: () -> Unit, onResumeGame: () -> Unit, modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsState()
     var host by remember { mutableStateOf("localhost") }
     var port by remember { mutableStateOf("5678") }
     var playerName by remember { mutableStateOf("") }
     var isConnecting by remember { mutableStateOf(false) }
     var showExitDialog by remember { mutableStateOf(false) }
+    val isReconnecting = uiState.isReconnecting
 
-    val canConnect = !isConnecting && playerName.isNotBlank()
+    val canConnect = !isConnecting && !isReconnecting && playerName.isNotBlank()
     val doConnect: () -> Unit = {
         if (canConnect) {
             isConnecting = true
@@ -47,6 +48,15 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
                 Text(text = "Multiplatform", fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(16.dp))
                 
+                if (isReconnecting) {
+                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            Text("Reconectando al servidor...", color = MaterialTheme.colorScheme.onSecondaryContainer)
+                        }
+                    }
+                }
+
                 if (!uiState.isConnected) {
                     OutlinedTextField(
                         value = playerName,
@@ -64,8 +74,12 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
                         modifier = Modifier.fillMaxWidth(),
                         enabled = canConnect
                     ) {
-                        if (isConnecting) { CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary); Spacer(modifier = Modifier.width(8.dp)) }
-                        Text(if (isConnecting) "Conectando..." else "Conectar al Servidor")
+                        if (isConnecting || isReconnecting) { CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary); Spacer(modifier = Modifier.width(8.dp)) }
+                        Text(when {
+                            isReconnecting -> "Reconectando..."
+                            isConnecting   -> "Conectando..."
+                            else           -> "Conectar al Servidor"
+                        })
                     }
                 } else {
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
@@ -93,6 +107,30 @@ fun MenuScreen(viewModel: GameViewModel, onStartPVE: () -> Unit, onStartPVP: () 
                 }
             }
         }
+    }
+
+    uiState.savedSession?.let { session ->
+        AlertDialog(
+            onDismissRequest = { viewModel.discardSession() },
+            title = { Text("Partida guardada", fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "Tienes una partida PVE guardada:\n" +
+                    "• Ronda ${session.currentRound} de ${session.totalRounds}\n" +
+                    "• ${session.wordLength} letras  •  ${session.totalScore} puntos\n\n" +
+                    "¿Quieres continuar donde lo dejaste?"
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.resumeSession()
+                    onResumeGame()
+                }) { Text("Continuar") }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { viewModel.discardSession() }) { Text("Descartar") }
+            }
+        )
     }
 
     if (showExitDialog) {

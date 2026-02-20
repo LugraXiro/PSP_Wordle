@@ -46,10 +46,23 @@ class PVEGame(
     private var gameAbandoned = false
     private var roundHintUsed = false
 
-    suspend fun start() {
-        FileLogger.info("SERVER", "🎮 Iniciando partida PVE: $gameId para jugador: $playerName")
+    // Accesores para que ClientHandler pueda guardar la sesión al desconectar
+    fun getCurrentRound(): Int = currentRound
+    fun getTotalScore(): Int = totalScore
+    fun getRoundsWon(): Int = roundsWon
+    fun getConfig(): protocol.GameConfig = config
+    fun isRoundActive(): Boolean = roundActive
 
-        repeat(config.rounds) { roundIndex ->
+    suspend fun start(resumeFromRound: Int = 1, initialScore: Int = 0, initialRoundsWon: Int = 0) {
+        if (resumeFromRound > 1 || initialScore > 0 || initialRoundsWon > 0) {
+            totalScore = initialScore
+            roundsWon = initialRoundsWon
+            FileLogger.info("SERVER", "🔄 Reanudando partida PVE: $gameId desde ronda $resumeFromRound, score=$initialScore")
+        } else {
+            FileLogger.info("SERVER", "🎮 Iniciando partida PVE: $gameId para jugador: $playerName")
+        }
+
+        for (roundIndex in (resumeFromRound - 1) until config.rounds) {
             if (gameAbandoned) {
                 FileLogger.info("SERVER", "🚪 Partida abandonada, terminando sin guardar puntuación")
                 return

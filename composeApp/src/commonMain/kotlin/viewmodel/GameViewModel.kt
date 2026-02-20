@@ -55,7 +55,9 @@ data class GameUiState(
     val showInvalidWordDialog: Boolean = false,
     val hintText: String? = null,
     val hintUsed: Boolean = false,
-    val playerStats: PlayerStats? = null
+    val playerStats: PlayerStats? = null,
+    val isReconnecting: Boolean = false,
+    val savedSession: SessionAvailable? = null
 )
 
 class GameViewModel : ViewModel() {
@@ -70,6 +72,11 @@ class GameViewModel : ViewModel() {
     private var isSubmitting = false
     private var pendingGameStarted: GameStarted? = null
     private var playerName: String = "Jugador"
+    private var lastHost: String = ""
+    private var lastPort: Int = 5678
+    private var intentionalDisconnect = false
+    private var isReconnectingInternal = false
+    private var reconnectJob: Job? = null
 
     init {
         // Observar mensajes del servidor
@@ -83,16 +90,20 @@ class GameViewModel : ViewModel() {
         viewModelScope.launch {
             networkClient.connectionState.collect { connected ->
                 _uiState.update { it.copy(isConnected = connected) }
-                if (!connected && _uiState.value.isInGame) {
-                    FileLogger.error(networkClient.clientTag, "❌ Conexión perdida durante la partida (ronda ${_uiState.value.currentRound}/${_uiState.value.totalRounds})")
+                if (connected || intentionalDisconnect || isReconnectingInternal) return@collect
+
+                if (_uiState.value.isInGame) {
+                    FileLogger.error(networkClient.clientTag, "❌ Conexión perdida durante la partida")
+                    stopTimer()
                     _uiState.update { it.copy(
-                        error = "Conexión perdida con el servidor",
+                        error = "Conexión perdida. Intentando reconectar...",
                         isInGame = false
                     )}
-                    stopTimer()
-                } else if (!connected) {
+                } else {
                     FileLogger.warning(networkClient.clientTag, "⚠️  Conexión con servidor perdida")
                 }
+
+                if (lastHost.isNotEmpty()) startReconnect()
             }
         }
     }
@@ -104,13 +115,14 @@ class GameViewModel : ViewModel() {
     }
 
     suspend fun connect(host: String, port: Int): Boolean {
+        lastHost = host
+        lastPort = port
+        intentionalDisconnect = false
         FileLogger.info(networkClient.clientTag, "🔌 Intentando conectar a $host:$port...")
         val result = networkClient.connect(host, port)
         if (result.isSuccess) {
             FileLogger.info(networkClient.clientTag, "✅ Conexión establecida exitosamente")
-            // Enviar nombre del jugador al servidor
             sendPlayerName()
-            // Solicitar records al conectar
             requestRecords()
             return true
         } else {
@@ -228,6 +240,11 @@ class GameViewModel : ViewModel() {
                 "HINT_RESPONSE" -> {
                     val hint = json.decodeFromString<HintResponse>(message.payload)
                     _uiState.update { it.copy(hintText = hint.hint, hintUsed = true) }
+                }
+                "SESSION_AVAILABLE" -> {
+                    val session = json.decodeFromString<SessionAvailable>(message.payload)
+                    _uiState.update { it.copy(savedSession = session) }
+                    FileLogger.info(networkClient.clientTag, "📂 Sesión guardada disponible: ronda ${session.currentRound}/${session.totalRounds}")
                 }
                 "STATS" -> {
                     val response = json.decodeFromString<StatsResponse>(message.payload)
@@ -620,8 +637,48 @@ class GameViewModel : ViewModel() {
         timerJob = null
     }
     
+    fun resumeSession() {
+        _uiState.update { it.copy(savedSession = null) }
+        viewModelScope.launch { networkClient.send("RESUME_GAME", "{}") }
+    }
+
+    fun discardSession() {
+        _uiState.update { it.copy(savedSession = null) }
+        viewModelScope.launch { networkClient.send("DISCARD_SESSION", "{}") }
+    }
+
+    private fun startReconnect() {
+        isReconnectingInternal = true
+        reconnectJob?.cancel()
+        _uiState.update { it.copy(isReconnecting = true) }
+        reconnectJob = viewModelScope.launch {
+            val delays = listOf(2_000L, 5_000L, 10_000L)
+            for ((attempt, delayMs) in delays.withIndex()) {
+                delay(delayMs)
+                FileLogger.info(networkClient.clientTag, "🔄 Reconexión ${attempt + 1}/${delays.size} a $lastHost:$lastPort...")
+                val result = networkClient.connect(lastHost, lastPort)
+                if (result.isSuccess) {
+                    sendPlayerName()
+                    requestRecords()
+                    isReconnectingInternal = false
+                    _uiState.update { it.copy(isReconnecting = false, error = null) }
+                    FileLogger.info(networkClient.clientTag, "✅ Reconexión exitosa")
+                    return@launch
+                }
+            }
+            isReconnectingInternal = false
+            _uiState.update { it.copy(
+                isReconnecting = false,
+                error = "No se pudo reconectar al servidor"
+            )}
+            FileLogger.error(networkClient.clientTag, "❌ Reconexión fallida tras ${delays.size} intentos")
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
+        intentionalDisconnect = true
+        reconnectJob?.cancel()
         viewModelScope.launch {
             networkClient.disconnect()
         }

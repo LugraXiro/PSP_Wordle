@@ -5,6 +5,7 @@ import logging.FileLogger
 import model.data.DictionaryManager
 import model.data.RecordsManager
 import model.data.ServerConfig
+import model.data.SessionManager
 import model.data.StatsManager
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -28,6 +29,7 @@ class GameServer(
     private val statsManager = StatsManager()
     private val gameOrchestrator = GameOrchestrator(dictionaryManager, recordsManager, statsManager)
     private val roomManager = RoomManager()
+    private val sessionManager = SessionManager()
     private val activeClients = AtomicInteger(0)
     @Volatile private var serverSocket: ServerSocket? = null
     @Volatile private var running = false
@@ -110,7 +112,8 @@ class GameServer(
                             socket = clientSocket,
                             gameOrchestrator = gameOrchestrator,
                             recordsManager = recordsManager,
-                            roomManager = roomManager
+                            roomManager = roomManager,
+                            sessionManager = sessionManager
                         )
                         handler.handle()
                     } finally {
