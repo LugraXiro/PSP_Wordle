@@ -1,4 +1,4 @@
-package ui.screens
+package view.pantallas
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

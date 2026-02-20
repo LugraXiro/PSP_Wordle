@@ -2,7 +2,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import protocol.GameMode
-import ui.screens.*
+import view.pantallas.*
 import viewmodel.GameViewModel
 
 enum class Screen { MENU, PVE_MODE_SELECT, PVE_CUSTOM_CONFIG, SELECT_WORD_LENGTH, GAME, RECORDS, PVP_LOBBY, PVP_ROOM }

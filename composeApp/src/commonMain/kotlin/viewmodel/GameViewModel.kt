@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import logging.FileLogger
-import network.NetworkClient
+import model.NetworkClient
 import protocol.*
 
 data class GameUiState(

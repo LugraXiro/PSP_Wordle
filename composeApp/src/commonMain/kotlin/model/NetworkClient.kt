@@ -1,4 +1,4 @@
-package network
+package model
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow

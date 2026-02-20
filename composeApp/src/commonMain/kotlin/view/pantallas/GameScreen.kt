@@ -1,4 +1,4 @@
-package ui.screens
+package view.pantallas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,7 +19,7 @@ import androidx.compose.ui.focus.focusTarget
 import kotlinx.coroutines.launch
 import protocol.PlayerRoundStatus
 import protocol.PlayerScore
-import ui.components.*
+import view.componentes.*
 import viewmodel.GameViewModel
 
 @Composable
