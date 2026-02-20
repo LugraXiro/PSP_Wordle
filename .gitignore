@@ -18,5 +18,10 @@ Thumbs.db
 # Logs
 wordle-logs.txt
 
+# Datos generados en runtime (servidor)
+server/records.json
+server/sessions.json
+server/stats.json
+
 # Planning (internal)
 docs/PLANNING_COMMITS.md

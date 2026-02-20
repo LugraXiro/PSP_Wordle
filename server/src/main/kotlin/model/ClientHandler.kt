@@ -70,7 +70,16 @@ class ClientHandler(
             when (msg.type) {
                 "SET_PLAYER_NAME" -> {
                     val request = json.decodeFromString<SetPlayerNameRequest>(msg.payload)
-                    playerName = request.playerName
+                    val name = request.playerName.trim()
+                    if (name.isBlank()) {
+                        send("ERROR", json.encodeToString(ErrorMessage.serializer(), ErrorMessage("INVALID_NAME", "El nombre no puede estar vacío")))
+                        return
+                    }
+                    if (name.length > 20) {
+                        send("ERROR", json.encodeToString(ErrorMessage.serializer(), ErrorMessage("INVALID_NAME", "El nombre no puede superar los 20 caracteres")))
+                        return
+                    }
+                    playerName = name
                     FileLogger.info("SERVER", "👤 [$clientId] Nombre del jugador establecido: $playerName")
                     val saved = sessionManager.getSession(playerName)
                     if (saved != null) {

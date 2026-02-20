@@ -8,6 +8,10 @@ application {
     mainClass.set("ServerKt")
 }
 
+tasks.named<JavaExec>("run") {
+    workingDir = projectDir
+}
+
 dependencies {
     implementation(project(":shared"))
     implementation(libs.kotlinx.coroutines.core)

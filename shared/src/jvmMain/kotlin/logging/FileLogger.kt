@@ -8,8 +8,7 @@ import kotlin.concurrent.withLock
 
 actual object FileLogger {
     private val logFile: File by lazy {
-        // Buscar el directorio raíz del proyecto
-        var currentDir = File(System.getProperty("user.dir"))
+        var currentDir: File? = File(System.getProperty("user.dir"))
         while (currentDir != null && !File(currentDir, "settings.gradle.kts").exists()) {
             currentDir = currentDir.parentFile
         }
