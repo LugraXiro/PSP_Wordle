@@ -20,7 +20,12 @@
       "Bash(taskkill:*)",
       "Bash(powershell -Command:*)",
       "Bash(./gradlew clean:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(./gradlew:*)",
+      "Bash(tasklist:*)",
+      "Bash(for pid in 36320 18596 7824 31408)",
+      "Bash(do echo \"PID $pid:\")",
+      "Bash(wmic process where \"ProcessId=$pid\" get CommandLine)"
     ]
   }
 }
